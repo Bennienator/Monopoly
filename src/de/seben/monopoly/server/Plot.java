@@ -1,4 +1,6 @@
-package de.seben.monopoly.main;
+package de.seben.monopoly.server;
+
+import de.seben.monopoly.client.SpielfeldFrame;
 
 import java.util.ArrayList;
 

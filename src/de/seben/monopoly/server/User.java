@@ -1,4 +1,4 @@
-package de.seben.monopoly.main;
+package de.seben.monopoly.server;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +10,8 @@ public class User {
     private String name; //Name des Spielers
     private Icon meeple; //Spielfigur des Spielers
 
-    public void move(int moves){
-        actPos = (actPos + moves) % 40;
+    public int move(int moves){
+        return actPos = (actPos + moves) % 40;
     }
 
     public int getActPos(){ return actPos; }

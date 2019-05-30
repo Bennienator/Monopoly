@@ -1,8 +1,11 @@
-package de.seben.monopoly.main;
+package de.seben.monopoly.client;
+
+import de.seben.monopoly.server.Plot;
+import de.seben.monopoly.server.User;
 
 import javax.swing.*;
 
-public class SpielfeldFrame extends JFrame {
+public class SpielfeldFrame extends JFrame implements FrameDelegate {
 
     private static SpielfeldFrame instance = null;
 
@@ -41,7 +44,7 @@ public class SpielfeldFrame extends JFrame {
         setIconImage(null); //TODO: IconImage
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setTitle("MonopolY");
+        setTitle("Monopoly");
         setResizable(false);
         setLayout(null);
 
@@ -90,4 +93,8 @@ public class SpielfeldFrame extends JFrame {
     }
 
     public User getActUser(){ return actUser; }
+
+    public void getInformation(String message){
+        
+    }
 }
