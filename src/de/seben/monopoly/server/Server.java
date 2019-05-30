@@ -1,4 +1,4 @@
-package server;
+package de.seben.monopoly.server;
 
 public class Server {
 

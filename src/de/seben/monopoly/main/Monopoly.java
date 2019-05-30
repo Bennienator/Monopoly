@@ -1,4 +1,4 @@
-package main;
+package de.seben.monopoly.main;
 
 public class Monopoly {
 

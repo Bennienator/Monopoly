@@ -1,4 +1,4 @@
-package client;
+package de.seben.monopoly.client;
 
 import java.net.ServerSocket;
 import java.net.Socket;
