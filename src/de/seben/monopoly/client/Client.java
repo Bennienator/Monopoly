@@ -1,6 +1,10 @@
 package de.seben.monopoly.client;
 
+import de.seben.monopoly.utils.Command;
+import de.seben.monopoly.utils.CommandType;
+
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -34,8 +38,16 @@ public class Client {
     }
 
     public Socket getSocket(){ return socket; }
+
     public void disconnect(){
         if(socket != null){
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeObject(new Command(CommandType.DISCONNECT));
+                oos.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
             try{
                 socket.close();
                 System.out.println("Verbindung zum Server geschlossen!");

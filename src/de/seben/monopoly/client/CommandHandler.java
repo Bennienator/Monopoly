@@ -4,7 +4,6 @@ import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 
 public class CommandHandler extends Thread{
