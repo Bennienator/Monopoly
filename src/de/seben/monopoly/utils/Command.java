@@ -14,4 +14,12 @@ public class Command implements Serializable {
         this.args = new ArrayList<>(Arrays.asList(args));
     }
 
+    public String toString(){
+        String command = cmdType.getCommand();
+        for(String arg : args){
+            command += " " + arg;
+        }
+        return command;
+    }
+
 }

@@ -11,7 +11,8 @@ public enum CommandType implements Serializable {
     PAY("PAY"),
     EARN("EARN"),
     SET_MONEY("SM"),
-    MESSAGE("MSG");
+    MESSAGE("MSG"),
+    CHAT("CHAT");
 
     private String command;
 
@@ -19,4 +20,7 @@ public enum CommandType implements Serializable {
         this.command = command;
     }
 
+    public String getCommand() {
+        return this.command;
+    }
 }
