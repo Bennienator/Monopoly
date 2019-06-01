@@ -18,7 +18,7 @@ public class Server {
     }
 
     /*
-    Wenn der Inhalt der Variable 'EOR' (Interface 'Announcements') vom aktiven Client gesendet wird, ist der nächste Spieler dran.
+    Wenn der Inhalt der Variable 'EOR' (Interface 'CommandType') vom aktiven Client gesendet wird, ist der nächste Spieler dran.
      */
 
 }
