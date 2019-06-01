@@ -34,7 +34,11 @@ public class Client {
     }
 
     public void addChatMessage(String message){
-        //TODO: implement method
+        frame.addChatMessage(message);
+    }
+
+    public void movePlayer(String name, int moves){
+
     }
 
     public Socket getSocket(){ return socket; }
