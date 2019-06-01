@@ -17,22 +17,25 @@ public class CommandHandler extends Thread{
     public void run(){ // Commands vom Server werden bearbeitet
         try {
             ObjectInputStream ois = new ObjectInputStream(owner.getSocket().getInputStream());
+            Object in;
             while (true) {
-                Command input = (Command) ois.readObject();
-                CommandType cmdType = input.getCmdType();
-                switch (cmdType){
-                    case ACCEPT:
-                        System.out.println("Client: Accept");
-                        break;
-                    case CHAT:
-                        StringBuilder message = new StringBuilder();
-                        String[] parts = input.toString().split(" ");
-                        for (int i = 1; i < parts.length; i++){
-                            message.append(parts[i]);
-                        }
-                        owner.addChatMessage(message.toString());
-                        break;
+                if((in = ois.readObject()) != null) {
+                    Command input = (Command) in;
+                    CommandType cmdType = input.getCmdType();
+                    switch (cmdType) {
+                        case ACCEPT:
+                            System.out.println("Client: Accept");
+                            break;
+                        case CHAT:
+                            StringBuilder message = new StringBuilder();
+                            String[] parts = input.toString().split(" ");
+                            for (int i = 1; i < parts.length; i++) {
+                                message.append(parts[i]);
+                            }
+                            owner.addChatMessage(message.toString());
+                            break;
 
+                    }
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
