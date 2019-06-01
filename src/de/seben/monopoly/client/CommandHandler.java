@@ -21,13 +21,22 @@ public class CommandHandler extends Thread{
                 Command input = (Command) ois.readObject();
                 CommandType cmdType = input.getCmdType();
                 switch (cmdType){
-                    case CHAT:
+                    case ACCEPT:
+                        System.out.println("Client: Accept");
                         break;
+                    case CHAT:
+                        StringBuilder message = new StringBuilder();
+                        String[] parts = input.toString().split(" ");
+                        for (int i = 1; i < parts.length; i++){
+                            message.append(parts[i]);
+                        }
+                        owner.addChatMessage(message.toString());
+                        break;
+
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
-
 }
