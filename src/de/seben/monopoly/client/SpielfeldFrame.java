@@ -85,19 +85,8 @@ public class SpielfeldFrame extends JFrame implements FrameDelegate {
         setVisible(true);
     }
 
-    public void moveUser(int userID, int moves) { //Spieler mit dem Index 'userID' soll um 'moves' Schritte weiterbewegt werden
-        plots[users[userID].getActPos()].removeVisitor(users[userID]);
-        users[userID].move(moves);
-        plots[users[userID].getActPos()].addVisitor(users[userID]);
-        //TODO: Aktion des Feldes ausführen
-    }
-
     public void showPlayerAtPlot(int plotID, int pos, Icon meeple) { //Position 'pos' beim Grundstück 'plotID' soll eine Spielfigur mit der Farbe 'colorOfPlayer' anzeigen
         placesForMeeples[plotID][pos].setIcon(meeple);
-    }
-
-    public User getActUser() {
-        return actUser;
     }
 
     public void addChatMessage(String message){
@@ -107,8 +96,6 @@ public class SpielfeldFrame extends JFrame implements FrameDelegate {
             chatTextArea.append("\n" + message + " (" + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(new GregorianCalendar().getTime()) + ")");
         }
     }
-
-    public void addMessage(String message){ JOptionPane.showMessageDialog(null, message, "Neue Mitteilung", JOptionPane.INFORMATION_MESSAGE); }
 
     public void getInformation(String message){ }
 }
