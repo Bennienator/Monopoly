@@ -18,7 +18,7 @@ public class Server {
         }
 
         for(int i = 0; i < 4; i++){
-
+            ClientController.getInstance().createNewClientConnection(serverSocket);
         }
 
     }
