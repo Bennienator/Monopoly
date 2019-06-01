@@ -23,13 +23,11 @@ public class ClientConnection extends Thread{
                 socket = server.accept();
             }
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(new Command(CommandType.CHAT, "Fucked you", "to"));
-            oos.close();
+            oos.writeObject(new Command(CommandType.ACCEPT));
             System.out.println("'ACCEPT' send");
             sleep(2000);
             oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(new Command(CommandType.ACCEPT));
-            oos.close();
+            oos.writeObject(new Command(CommandType.CHAT, "Fucked you", "to"));
         }catch (IOException | InterruptedException e){
             e.printStackTrace();
         }
