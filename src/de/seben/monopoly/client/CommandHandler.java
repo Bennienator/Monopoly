@@ -40,7 +40,11 @@ public class CommandHandler extends Thread{
                     }
                 }
             }catch (EOFException e){
-
+                try {
+                    sleep(10);
+                }catch (InterruptedException ex){
+                    ex.printStackTrace();
+                }
             }catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();
             }
