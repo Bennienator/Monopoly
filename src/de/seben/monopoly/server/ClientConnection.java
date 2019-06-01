@@ -11,7 +11,7 @@ import java.net.Socket;
 public class ClientConnection extends Thread{
 
     private ServerSocket server;
-    private Socket client;
+    private Socket socket;
 
     public ClientConnection(ServerSocket server){
         this.server = server;
@@ -19,17 +19,15 @@ public class ClientConnection extends Thread{
 
     public void run(){
         try {
-            while (client == null) {
-                client = server.accept();
+            while (socket == null) {
+                socket = server.accept();
             }
-            ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(new Command(CommandType.ACCEPT));
-            oos.close();
             System.out.println("'ACCEPT' send");
             sleep(2000);
-            oos = new ObjectOutputStream(client.getOutputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(new Command(CommandType.CHAT, "Fucked you", "to"));
-            oos.close();
         }catch (IOException | InterruptedException e){
             e.printStackTrace();
         }
