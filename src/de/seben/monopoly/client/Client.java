@@ -18,6 +18,7 @@ public class Client {
         try {
             socket = new Socket("localhost", 7777);
             System.out.println("Verbindung hergestellt!");
+            contanct = new CommandHandler(this);
         }catch (UnknownHostException e){
             System.out.println("Dieser Host ist nicht bekannt!");
         }catch (ConnectException e){
@@ -29,12 +30,15 @@ public class Client {
                 try{
                     socket.close();
                     System.out.println("Verbindung zum Server geschlossen!");
-                    contanct = new CommandHandler(this);
                 }catch (IOException e){
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    public void addChatMessage(String message){
+        //TODO: implement method
     }
 
     public Socket getSocket(){ return socket; }
