@@ -16,35 +16,33 @@ public class CommandHandler extends Thread{
     }
 
     public void run(){ // Commands vom Server werden bearbeitet
-        try {
-            ObjectInputStream ois = new ObjectInputStream(owner.getSocket().getInputStream());
-            Object in;
-            while (true) {
-                try {
-                    if ((in = ois.readObject()) != null) {
-                        Command input = (Command) in;
-                        CommandType cmdType = input.getCmdType();
-                        switch (cmdType) {
-                            case ACCEPT:
-                                System.out.println("Client: Accept");
-                                break;
-                            case CHAT:
-                                StringBuilder message = new StringBuilder();
-                                String[] parts = input.toString().split(" ");
-                                for (int i = 1; i < parts.length; i++) {
-                                    message.append(parts[i]);
-                                }
-                                owner.addChatMessage(message.toString());
-                                break;
-
-                        }
+        while (true) {
+            try {
+                ObjectInputStream ois = new ObjectInputStream(owner.getSocket().getInputStream());
+                Object in;
+                if ((in = ois.readObject()) != null) {
+                    Command input = (Command) in;
+                    CommandType cmdType = input.getCmdType();
+                    switch (cmdType) {
+                        case ACCEPT:
+                            System.out.println("Client: Accept");
+                            break;
+                        case CHAT:
+                            StringBuilder message = new StringBuilder();
+                            String[] parts = input.toString().split(" ");
+                            for (int i = 1; i < parts.length; i++) {
+                                message.append(parts[i]);
+                            }
+                            System.out.println("CHAT: " + message);
+                            owner.addChatMessage(message.toString());
+                            break;
                     }
-                }catch (EOFException e){
-
                 }
+            }catch (EOFException e){
+
+            }catch (IOException | ClassNotFoundException e){
+                e.printStackTrace();
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 }

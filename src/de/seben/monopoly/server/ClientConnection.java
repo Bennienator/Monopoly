@@ -19,17 +19,18 @@ public class ClientConnection extends Thread{
 
     public void run(){
         try {
-            while (true) {
-                Socket socket = server.accept();
-                if(socket != null){
-                    client = socket;
-                    ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                    oos.writeObject(new Command(CommandType.ACCEPT));
-                    oos.close();
-                    System.out.println("'ACCEPT' send");
-                }
+            while (client == null) {
+                client = server.accept();
             }
-        }catch (IOException e){
+            ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+            oos.writeObject(new Command(CommandType.ACCEPT));
+            oos.close();
+            System.out.println("'ACCEPT' send");
+            sleep(2000);
+            oos = new ObjectOutputStream(client.getOutputStream());
+            oos.writeObject(new Command(CommandType.CHAT, "Fucked you", "to"));
+            oos.close();
+        }catch (IOException | InterruptedException e){
             e.printStackTrace();
         }
     }
