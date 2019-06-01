@@ -4,18 +4,18 @@ import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.net.Socket;
 
 public class CommandHandler extends Thread{
 
     private Client owner;
-    private ObjectInputStream ois;
+    private InputStream is;
 
     public CommandHandler(Client client){
         try {
-            this.owner = owner;
-            ois = (ObjectInputStream) owner.getSocket().getInputStream();
+            this.owner = client;
+            is = owner.getSocket().getInputStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -23,6 +23,7 @@ public class CommandHandler extends Thread{
 
     public void run(){ // Commands vom Server werden bearbeitet
         try {
+            ObjectInputStream ois = new ObjectInputStream(is);
             while (true) {
                 Command input = (Command) ois.readObject();
                 CommandType cmdType = input.getCmdType();

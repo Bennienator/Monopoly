@@ -9,7 +9,7 @@ public class Client {
 
     private Socket socket;
     private SpielfeldFrame frame;
-    private CommandHandler contanct;
+    private CommandHandler contact;
 
     public Client(){
 
@@ -18,22 +18,14 @@ public class Client {
         try {
             socket = new Socket("localhost", 7777);
             System.out.println("Verbindung hergestellt!");
-            contanct = new CommandHandler(this);
+            contact = new CommandHandler(this);
+            contact.start();
         }catch (UnknownHostException e){
             System.out.println("Dieser Host ist nicht bekannt!");
         }catch (ConnectException e){
             System.out.println("Der Port ist nicht geöffnet!");
         }catch (IOException e){
             e.printStackTrace();
-        }finally {
-            if(socket != null){
-                try{
-                    socket.close();
-                    System.out.println("Verbindung zum Server geschlossen!");
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -42,5 +34,15 @@ public class Client {
     }
 
     public Socket getSocket(){ return socket; }
+    public void disconnect(){
+        if(socket != null){
+            try{
+                socket.close();
+                System.out.println("Verbindung zum Server geschlossen!");
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
