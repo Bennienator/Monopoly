@@ -9,6 +9,7 @@ public class Client {
 
     private Socket socket;
     private SpielfeldFrame frame;
+    private CommandHandler contanct;
 
     public Client(){
 
@@ -28,12 +29,14 @@ public class Client {
                 try{
                     socket.close();
                     System.out.println("Verbindung zum Server geschlossen!");
+                    contanct = new CommandHandler(this);
                 }catch (IOException e){
                     e.printStackTrace();
                 }
             }
         }
-
     }
+
+    public Socket getSocket(){ return socket; }
 
 }

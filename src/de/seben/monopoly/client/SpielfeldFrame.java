@@ -95,6 +95,6 @@ public class SpielfeldFrame extends JFrame implements FrameDelegate {
     public User getActUser(){ return actUser; }
 
     public void getInformation(String message){
-        
+
     }
 }

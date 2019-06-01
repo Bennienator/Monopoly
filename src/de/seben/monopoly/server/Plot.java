@@ -1,7 +1,5 @@
 package de.seben.monopoly.server;
 
-import de.seben.monopoly.client.SpielfeldFrame;
-
 import java.util.ArrayList;
 
 public class Plot {
@@ -35,7 +33,7 @@ public class Plot {
         }
         visitors.add(user);
         if (pos == -1){
-            if (user.getName().equals(SpielfeldFrame.getInstance().getActUser().getName())){
+            if (user.getName().equals(null)){ //TODO: Überprüfung, ob der Spieler der aktuelle Spieler ist
                 shownVisitors[0] = user;
                 //TODO: Spielfigur an der Position 0 der Besucher-Anzeige anzeigen lassen
             } else {
