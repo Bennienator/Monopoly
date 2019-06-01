@@ -27,7 +27,7 @@ public class ClientConnection extends Thread{
             System.out.println("'ACCEPT' send");
             sleep(2000);
             oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(new Command(CommandType.CHAT, "Fucked you", "to"));
+            oos.writeObject(new Command(CommandType.CHAT, "Fucked", "you", "too"));
         }catch (IOException | InterruptedException e){
             e.printStackTrace();
         }
