@@ -13,13 +13,12 @@ public class Server {
         System.out.println("Servus! Ich bin ein Server.");
         try {
             serverSocket = new ServerSocket(7777);
-            ClientController.getInstance().createNewClientConnection(serverSocket);
         }catch (IOException e){
             e.printStackTrace();
         }
 
         for(int i = 0; i < 4; i++){
-
+            ClientController.getInstance().createNewClientConnection(serverSocket);
         }
 
     }
