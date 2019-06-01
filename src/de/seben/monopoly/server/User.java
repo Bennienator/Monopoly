@@ -14,7 +14,9 @@ public class User {
         return actPos = (actPos + moves) % 40;
     }
 
-    public int getActPos(){ return actPos; }
+    public void setPosition(int pos) { actPos = pos; }
+
+    public int getPosition(){ return actPos; }
 
     public String getName(){ return name; }
 

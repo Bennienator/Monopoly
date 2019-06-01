@@ -6,6 +6,7 @@ import de.seben.monopoly.utils.CommandType;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -52,6 +53,17 @@ public class ClientConnection extends Thread{
             }catch (IOException | ClassNotFoundException e){
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void sendCommand(Command output){
+        try {
+            if (socket != null) {
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeObject(output);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

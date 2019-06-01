@@ -37,7 +37,27 @@ public class Client {
         frame.addChatMessage(message);
     }
 
-    public void movePlayer(String name, int moves){
+    public void movePlayer(String name, int plotID){
+
+    }
+
+    public void setOwner(String name, int plotID){
+
+    }
+
+    public void changeAmountHouses(int plotID, int amount){
+
+    }
+
+    public void changeCreditPlayer(String name, int value){
+
+    }
+
+    public void setCreditPlayer(String name, int value){
+
+    }
+
+    public void startRound(){
 
     }
 

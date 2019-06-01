@@ -24,4 +24,6 @@ public class Command implements Serializable {
 
     public CommandType getCmdType(){ return cmdType; }
 
+    public ArrayList<String> getArgs(){ return args; }
+
 }

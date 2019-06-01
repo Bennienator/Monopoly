@@ -13,6 +13,8 @@ public class SpielfeldFrame extends JFrame implements FrameDelegate {
 
     private JLabel[] plotLabel;
     private JTextArea chatTextArea;
+    private JTextField serverTextField, portTextField, messageTextField;
+    private JButton connectButton;
 
     private int[] X, Y; //KOS-Punkte
     private int W1; //Breite eines Grundstück-Feldes

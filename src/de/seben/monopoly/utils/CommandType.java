@@ -5,9 +5,11 @@ import java.io.Serializable;
 public enum CommandType implements Serializable {
 
     END_OF_ROUND("EOR"),
+    START_ROUND("SR"),
     MOVE_PLAYER("MP"),
     CLAIM_PLOT("CP"),
     BUILD_HOUSE("BH"),
+    REMOVE_HOUSE("RH"),
     PAY("PAY"),
     EARN("EARN"),
     SET_MONEY("SM"),

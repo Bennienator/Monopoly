@@ -22,12 +22,4 @@ public class Server {
 
     }
 
-    public void broadcastChatMessage(String message){
-        //TODO: implement method
-    }
-
-    /*
-    Wenn der CommandType 'EOR' vom aktiven Client gesendet wird, ist der nächste Spieler dran.
-     */
-
 }
