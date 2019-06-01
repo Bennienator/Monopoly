@@ -10,20 +10,14 @@ import java.io.ObjectInputStream;
 public class CommandHandler extends Thread{
 
     private Client owner;
-    private InputStream is;
 
     public CommandHandler(Client client){
-        try {
-            this.owner = client;
-            is = owner.getSocket().getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.owner = client;
     }
 
     public void run(){ // Commands vom Server werden bearbeitet
         try {
-            ObjectInputStream ois = new ObjectInputStream(is);
+            ObjectInputStream ois = new ObjectInputStream(owner.getSocket().getInputStream());
             while (true) {
                 Command input = (Command) ois.readObject();
                 CommandType cmdType = input.getCmdType();

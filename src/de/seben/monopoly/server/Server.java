@@ -2,7 +2,6 @@ package de.seben.monopoly.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
 
 public class Server {
 
