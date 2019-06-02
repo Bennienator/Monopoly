@@ -10,6 +10,7 @@ public enum CommandType implements Serializable {
     CLAIM_PLOT("CP"),
     BUILD_HOUSE("BH"),
     REMOVE_HOUSE("RH"),
+    BUY_PLOT("BP"),
     PAY("PAY"),
     EARN("EARN"),
     SET_MONEY("SM"),

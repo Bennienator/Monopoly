@@ -1,5 +1,7 @@
 package de.seben.monopoly.server;
 
+import de.seben.monopoly.server.User;
+
 import java.util.ArrayList;
 
 public class Plot {
@@ -12,8 +14,10 @@ public class Plot {
     private int[][] posForPlaces; //Position der Platzierung für eine Spielfigur ("Vektor", beginnend von der Ecke oben links des Grundstücks)
     private User[] shownVisitors; //angezeigte Besucher
     private ArrayList<User> visitors; //alle Besucher
+    private User owner;
+    private PlotAction effect; //auszuführender Effekt beim Betreten des Geländes
 
-    public Plot(int id, int streetID, int[] rents, String name, int[][] posForPlaces){
+    public Plot(int id, int streetID, int[] rents, String name, int[][] posForPlaces, PlotAction effect){
         this.id = id;
         this.streetID = streetID;
         this.rents = rents;
@@ -22,6 +26,7 @@ public class Plot {
         this.posForPlaces = posForPlaces;
         shownVisitors = new User[posForPlaces.length];
         visitors = new ArrayList<>();
+        this.effect = effect;
     }
 
     public void addVisitor(User user){ //Neuen Besucher des Grundstücks (user) hinzufügen -> Spieler kommt grad an
