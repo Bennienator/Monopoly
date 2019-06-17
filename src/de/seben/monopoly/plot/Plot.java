@@ -1,4 +1,4 @@
-package de.seben.monopoly.server;
+package de.seben.monopoly.plot;
 
 import de.seben.monopoly.server.User;
 
@@ -38,7 +38,7 @@ public class Plot {
         }
         visitors.add(user);
         if (pos == -1){
-            if (user.getName().equals(null)){ //TODO: Überprüfung, ob der Spieler der aktuelle Spieler ist
+            if (true){ //TODO: Überprüfung, ob der Spieler der aktuelle Spieler ist
                 shownVisitors[0] = user;
                 //TODO: Spielfigur an der Position 0 der Besucher-Anzeige anzeigen lassen
             } else {
@@ -70,6 +70,18 @@ public class Plot {
         }
     }
 
+    public boolean changeAmountHouse(int amount){
+        if (posRents + amount <= 0 || posRents + amount >= rents.length){
+            return false;
+        }
+        posRents += amount;
+        return true;
+    }
+
+    public void activateEffect(){
+        effect.start();
+    }
+
     private int getPosForShownVisitor(User user){ //Position beim Grundstück des angezeigten Spieler zurückgeben (falls nicht angezeigt: -1)
         for (int i = 0; i < shownVisitors.length; i++){
             if (shownVisitors[i].getName().equals(user.getName())){
@@ -78,4 +90,8 @@ public class Plot {
         }
         return -1;
     }
+
+    public User getOwner(){ return owner; }
+
+    public void setPosRents(int posRents){ this.posRents = posRents; }
 }

@@ -32,17 +32,7 @@ public class ClientConnection extends Thread{
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Object in;
                 if ((in = ois.readObject()) != null) {
-                    Command input = (Command) in;
-                    CommandType cmdType = input.getCmdType();
-                    switch (cmdType) {
-                        case DISCONNECT:
-                            break;
-                        case BUILD_HOUSE:
-                            break;
-                        case END_OF_ROUND:
-                            break;
-                        //USW
-                    }
+                    ClientController.getInstance().analyseCommand((Command) in);
                 }
             }catch (EOFException e){
                 try {

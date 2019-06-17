@@ -1,6 +1,6 @@
 package de.seben.monopoly.client;
 
-import de.seben.monopoly.server.Plot;
+import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.server.User;
 
 import javax.swing.*;
