@@ -15,8 +15,10 @@ public enum CommandType implements Serializable {
     EARN("EARN"),
     SET_MONEY("SM"),
     MESSAGE("MSG"),
-    DISCONNECT("DC"),
+    CONNECT("CC"),
     ACCEPT("ACPT"),
+    DISCONNECT("DC"),
+    REFUSE("RFS"),
     CHAT("CHAT");
 
     private String command;

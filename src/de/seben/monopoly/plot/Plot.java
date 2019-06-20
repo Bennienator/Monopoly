@@ -78,8 +78,8 @@ public class Plot {
         return true;
     }
 
-    public void activateEffect(){
-        effect.start();
+    public void activateEffect(User visitor){
+        effect.start(visitor);
     }
 
     private int getPosForShownVisitor(User user){ //Position beim Grundstück des angezeigten Spieler zurückgeben (falls nicht angezeigt: -1)

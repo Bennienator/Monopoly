@@ -13,8 +13,9 @@ public class ClientController {
     private static ClientController instance;
 
     private HashMap<String, ClientConnection> clients = new HashMap<>();
-    private ArrayList<String> nameUsers;
+    private ArrayList<String> keys = new ArrayList<>();
     private ServerEngine engine;
+    private int amountConnections = 0;
 
     public static ClientController getInstance(){
         if(instance == null)
@@ -29,9 +30,15 @@ public class ClientController {
     public void createNewClientConnection(ServerSocket server){
         if(clients.size() < 4){
             ClientConnection con = new ClientConnection(server);
-            clients.put("", con);
+            clients.put("Slot" + amountConnections, con);
+            keys.add("Slot" + amountConnections);
+            amountConnections++;
             con.start();
         }
+    }
+
+    public void connect(String nameUser, ClientConnection con){
+        clients.remove(con);
     }
 
     public void sendCommand(Command output, String... recipients){
@@ -44,7 +51,7 @@ public class ClientController {
 
     public void broadcastCommand(Command output){
         for (int i = 0; i < clients.size(); i++){
-            clients.get(i).sendCommand(output);
+            if (!keys.get(i).equals("")) clients.get(keys.get(i)).sendCommand(output);
         }
     }
 
@@ -57,16 +64,27 @@ public class ClientController {
                 break;
             case CLAIM_PLOT: // args: Name des Spielers, plotID
                 break;
-            case BUILD_HOUSE: // args: Name des Spielers, plotID
-                engine.changeAmountHouses(nameUsers.indexOf(args.get(0)), Integer.valueOf(args.get(1)), 1);
+            case BUILD_HOUSE: // args: plotID
+                engine.changeAmountHouses(Integer.valueOf(args.get(1)), 1);
                 break;
-            case REMOVE_HOUSE: // args: Name des Spielers, plotID
-                engine.changeAmountHouses(nameUsers.indexOf(args.get(0)), Integer.valueOf(args.get(0)), -1);
+            case REMOVE_HOUSE: // args: plotID
+                engine.changeAmountHouses(Integer.valueOf(args.get(0)), -1);
                 break;
             case PAY: // args: Name des Spielers, Höhe des Betrages, Ziel
+                engine.changeBalance(args.get(0), -1 * Integer.valueOf(args.get(1)));
+                engine.changeBalance(args.get(2), Integer.valueOf(args.get(1)));
                 break;
             case EARN: // args: Name des Spielers, Höhe des Betrages
+                engine.changeBalance(args.get(0), Integer.valueOf(args.get(1)));
+                break;
             case DISCONNECT: // args: Name des Spielers
+                String nameUser = args.get(0);
+                engine.removeUser(nameUser);
+                ClientConnection con = clients.remove(nameUser);
+                keys.remove(nameUser);
+                clients.put("", con);
+                keys.add("");
+                con.start();
                 break;
             case CHAT: // args: Name des Spielers, Nachricht
                 break;

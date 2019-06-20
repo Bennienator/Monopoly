@@ -5,53 +5,64 @@ import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ServerEngine {
 
     private Plot[] plots;
-    private ArrayList<User> users;
+    private HashMap<String, User> users;
+    private ArrayList<String> keys;
     private int actUser;
 
 
     public ServerEngine(){
         plots = new Plot[41]; //0-39: Spielrunde (0: Start), 40 = Feld für Gefängnisinsassen (10: Gefängnisbesucher)
         //TODO: Alle Spielfelder erstellen
-        users = new ArrayList<>(4);
+        users = new HashMap<>();
+        keys = new ArrayList<>();
+    }
+
+    public void addUser(String name){
+        users.put(name, new User(name));
+        keys.add(name);
+    }
+
+    public void removeUser(String name){
+        users.remove(name);
+        keys.remove(name);
     }
 
     public void startRound(){
-        do {
-            actUser = (actUser + 1) % 4;
-        } while (users.get(actUser) == null);
-        ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, users.get(actUser).getName() + " ist nun an der Reihe."));
+        actUser = (actUser + 1) % users.size();
+        String keyAct = keys.get(actUser);
+        ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, users.get(keyAct).getName() + " ist nun an der Reihe."));
         int cubeOne = 0, cubeTwo = 0;
         for (int cubed = 1; cubeOne == cubeTwo; cubed++){
             cubeOne = (int) (Math.random() * 6) + 1;
             cubeTwo = (int) (Math.random() * 6) + 1;
             if (cubed == 3 && cubeOne == cubeTwo){
                 intoPrison(actUser);
-                ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, "Weil " + users.get(actUser).getName() + "3 Päsche hintereinander gewürfelt hat, muss er nun in das Gefängnis."));
+                ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, "Weil " + users.get(keyAct).getName() + "3 Päsche hintereinander gewürfelt hat, muss er nun in das Gefängnis."));
                 startRound();
                 break;
             }
             int moves = cubeOne + cubeTwo;
-            plots[users.get(actUser).getPosition()].removeVisitor(users.get(actUser));
-            int newPos = users.get(actUser).move(moves);
-            plots[newPos].addVisitor(users.get(actUser));
-            ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(newPos)));
-            plots[newPos].activateEffect();
+            plots[users.get(keyAct).getPosition()].removeVisitor(users.get(keyAct));
+            int newPos = users.get(keyAct).move(moves);
+            plots[newPos].addVisitor(users.get(keyAct));
+            ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, keyAct, String.valueOf(newPos)));
+            plots[newPos].activateEffect(users.get(keyAct));
         }
+
     }
 
-    public void changeAmountHouses(int userID, int plotID, int amount){
-        User plotOwner = plots[plotID].getOwner();
-        if (plotOwner != null){
-            if (userID != users.indexOf(plots[plotID].getOwner())){
-                plots[plotID].changeAmountHouse(amount);
-                return;
-            }
-        }
-        ClientController.getInstance().sendCommand(new Command(CommandType.MESSAGE, "Du kannst die Häuser von diesem Grundstück nicht verwalten, weil du nicht der Eigentümer von diesem Grundstück bist."), users.get(userID).getName());
+    public void changeAmountHouses(int plotID, int amount){
+        plots[plotID].changeAmountHouse(amount);
+    }
+
+    public void changeBalance(String userName, int amount){
+        CommandType outputType = users.get(userName).changeBalance(amount) ? CommandType.ACCEPT : CommandType.REFUSE;
+        if (amount < 0) ClientController.getInstance().sendCommand(new Command(outputType), userName);
     }
 
     public void intoPrison(int userPos){

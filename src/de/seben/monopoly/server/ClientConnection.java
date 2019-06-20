@@ -14,6 +14,7 @@ public class ClientConnection extends Thread{
 
     private ServerSocket server;
     private Socket socket;
+    private String name;
 
     public ClientConnection(ServerSocket server){
         this.server = server;
@@ -27,20 +28,33 @@ public class ClientConnection extends Thread{
         }catch (IOException e){
             e.printStackTrace();
         }
+        long start = System.currentTimeMillis();
+        boolean shutdown;
+        try {
+            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            ClientController.getInstance().analyseCommand((Command) ois.readObject());
+        } catch (EOFException e) {
+            try {
+                sleep(10);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         while(true){
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                Object in;
-                if ((in = ois.readObject()) != null) {
-                    ClientController.getInstance().analyseCommand((Command) in);
-                }
+                Command in = (Command) ois.readObject();
+                ClientController.getInstance().analyseCommand(in);
+                if (in.getCmdType() == CommandType.DISCONNECT) return;
             }catch (EOFException e){
                 try {
                     sleep(10);
                 }catch (InterruptedException ex){
                     ex.printStackTrace();
                 }
-            }catch (IOException | ClassNotFoundException e){
+            }catch (IOException | ClassNotFoundException | NullPointerException e){
                 e.printStackTrace();
             }
         }
