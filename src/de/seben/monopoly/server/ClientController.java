@@ -70,7 +70,7 @@ public class ClientController {
             case REMOVE_HOUSE: // args: plotID
                 engine.changeAmountHouses(Integer.valueOf(args.get(0)), -1);
                 break;
-            case PAY: // args: Name des Spielers, Höhe des Betrages, Ziel
+            case PAY: // args: Name des Spielers, Höhe des Betrages, Name des Zielspielers
                 engine.changeBalance(args.get(0), -1 * Integer.valueOf(args.get(1)));
                 engine.changeBalance(args.get(2), Integer.valueOf(args.get(1)));
                 break;
@@ -87,6 +87,8 @@ public class ClientController {
                 con.start();
                 break;
             case CHAT: // args: Name des Spielers, Nachricht
+                String username = args.get(0);
+                String message = String.join(" ", args.subList(1, args.size() - 1));
                 break;
         }
     }
