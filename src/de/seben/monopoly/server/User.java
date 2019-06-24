@@ -1,19 +1,20 @@
 package de.seben.monopoly.server;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class User {
 
     //TODO: Wie kann das Programm ein Icon einfügen?
+    //Muss das ein Icon sein oder kann das auch ein Image sein?
 
     private int balance; //Guthaben des Spielers
     private int actPos; //aktuelle Position des Spielers auf dem Spielbrett (= ID des Grundstücks)
     private String name; //Name des Spielers
-    private Icon meeple; //Spielfigur des Spielers
+    private Image meeple; //Spielfigur des Spielers
 
     public User(String name){
         this.name = name;
+        this.meeple = Toolkit.getDefaultToolkit().getImage("");
     }
 
     public int move(int moves){
@@ -34,5 +35,5 @@ public class User {
 
     public String getName(){ return name; }
 
-    public Icon getIcon(){ return meeple; }
+    public Image getIcon(){ return meeple; }
 }
