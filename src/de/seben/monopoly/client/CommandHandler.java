@@ -45,7 +45,7 @@ public class CommandHandler extends Thread{
                             client.changeAmountHouses(Integer.valueOf(args.get(0)), -1);
                             break;
                         case BUY_PLOT:
-                            int choice = JOptionPane.showConfirmDialog(null, "Du hast die Möglichkeit, das Grundstück '" + args.get(1) + "' zu kaufen. Der Kauf kostet " + args.get(2) + ".\nMöchtest du diese Chance nutzen?", "Grundstück verfügbar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                            int choice = JOptionPane.showConfirmDialog(null, "Du hast die Möglichkeit, das Grundstück '" + args.get(1) + "' zu kaufen. Es kostet " + args.get(2) + ".\nMöchtest du dieses Grundstück kaufen?", "Grundstück verfügbar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                             if (choice == 0){
                                 ObjectOutputStream oos = new ObjectOutputStream(client.getSocket().getOutputStream());
                                 oos.writeObject(new Command(CommandType.PAY, args.get(2)));
