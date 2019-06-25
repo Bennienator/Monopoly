@@ -47,6 +47,10 @@ public class User {
 
     public String getName(){ return this.name; }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
     public Image getIcon(){ return this.meeple; }
 
     public int getID() {

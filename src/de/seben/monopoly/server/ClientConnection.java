@@ -1,5 +1,6 @@
 package de.seben.monopoly.server;
 
+import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
@@ -18,13 +19,16 @@ public class ClientConnection extends Thread{
     private User user;
 
     public ClientConnection(ServerSocket server){
+        Monopoly.debug("Created instance");
         this.server = server;
     }
 
     public void run(){
+        Monopoly.debug("Waiting for client connection");
         try {
             while (socket == null) {
                 socket = server.accept();
+                Monopoly.debug("Socket accepted");
                 ClientController.getInstance().preRegisterPlayer(this);
             }
         }catch (IOException e){
@@ -35,6 +39,7 @@ public class ClientConnection extends Thread{
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Command in = (Command) ois.readObject();
+                Monopoly.debug("Command incomming");
                 ClientController.getInstance().analyseIncommingCommand(in);
             }catch (EOFException e){
                 try {
@@ -46,7 +51,7 @@ public class ClientConnection extends Thread{
                 e.printStackTrace();
             }
         }
-        System.out.println("Client disconnected");
+        Monopoly.debug("Socket is null");
         ClientController.getInstance().disconnect(this);
     }
 

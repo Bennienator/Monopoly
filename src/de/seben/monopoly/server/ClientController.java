@@ -1,5 +1,6 @@
 package de.seben.monopoly.server;
 
+import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
@@ -23,11 +24,13 @@ public class ClientController {
     private boolean running;
 
     private ClientController(){
-        engine = new ServerEngine();
+        Monopoly.debug("Created instance");
+        engine = ServerEngine.getInstance();
     }
 
     public ClientController start(){
         if(!running){
+            Monopoly.debug("Starting...");
             running = true;
             for(int i = 0; i < 4; i++){
                 createNewClientConnection(Server.getInstance().getSocket());

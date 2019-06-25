@@ -1,5 +1,6 @@
 package de.seben.monopoly.server;
 
+import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
@@ -10,12 +11,24 @@ import java.util.Random;
 
 public class ServerEngine {
 
+    private static ServerEngine instance;
+    public static ServerEngine getInstance(){
+        if(instance == null)
+            instance = new ServerEngine();
+        return instance;
+    }
+
     private Plot[] plots;
     private HashMap<Integer, User> users;
     private int actUser;
 
+    private ServerEngine(){
+        Monopoly.debug("Created instance");
+        init();
+    }
 
-    public ServerEngine(){
+    private void init(){
+        Monopoly.debug("Initializing...");
         plots = new Plot[41]; //0-39: Spielrunde (0: Start), 40 = Feld für Gefängnisinsassen (10: Gefängnisbesucher)
         //TODO: Alle Spielfelder erstellen
         users = new HashMap<>();
@@ -27,8 +40,8 @@ public class ServerEngine {
         return user;
     }
     public User addUser(int id, String name){
-        User user = new User(id, name);
-        users.put(id, user);
+        User user = this.addUser(id);
+        user.setName(name);
         return user;
     }
 

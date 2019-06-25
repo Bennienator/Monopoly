@@ -1,7 +1,10 @@
 package de.seben.monopoly.server;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
+
+import de.seben.monopoly.main.Monopoly;
 
 public class Server {
 
@@ -15,19 +18,32 @@ public class Server {
 
     private ServerSocket serverSocket;
     private ClientController controller;
+    private ServerEngine engine;
 
-    private Server(){}
+    private Server(){
+        Monopoly.debug("Created instance");
+    }
 
     public void start(){
         if(!running){
             running = true;
-            System.out.println("Servus! Ich bin ein Server.");
+            Monopoly.debug("Starting...");
             try {
                 serverSocket = new ServerSocket(7777);
-            }catch (IOException e){
-                e.printStackTrace();
+            }catch(Exception e){
+                if(e instanceof BindException){
+                    Monopoly.debug("Port already in use");
+                }else if(e instanceof IOException){
+                    e.printStackTrace();
+                }
+                Monopoly.debug("Exiting");
+                System.exit(-1);
             }
-            this.controller = ClientController.getInstance().start();
+            if(serverSocket != null){
+                Monopoly.debug("Started");
+                this.controller = ClientController.getInstance().start();
+                this.engine = ServerEngine.getInstance();
+            }
         }
     }
 
