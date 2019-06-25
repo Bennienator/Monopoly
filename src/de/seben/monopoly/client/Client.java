@@ -1,5 +1,6 @@
 package de.seben.monopoly.client;
 
+import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
@@ -24,27 +25,30 @@ public class Client {
 
     private boolean running;
 
-    private Client(){}
+    private Client(){
+        Monopoly.debug("Created instance");
+    }
 
     public void start(){
         if(!running){
+            Monopoly.debug("Starting...");
             running = true;
             while(socket == null) {
                 try {
                     socket = new Socket("localhost", 7777);
-                    System.out.println("Verbindung hergestellt");
+                    Monopoly.debug("Socket connected");
                     handler = new CommandHandler(this);
                     handler.start();
                 } catch (Exception e) {
                     if(e instanceof UnknownHostException){
-                        System.out.println("Der Host wurde nicht gefunden");
+                        Monopoly.debug("Unknown Host");
                     }else if(e instanceof ConnectException){
-                        System.out.println("Der Port ist nicht geöffnet!");
+                        Monopoly.debug("Port closed");
                     }else if(e instanceof IOException){
                         e.printStackTrace();
                     }
                     try {
-                        System.out.println("Trying again in 10 sec...");
+                        Monopoly.debug("Trying again (10s)");
                         Thread.sleep(10000);
                     }catch (InterruptedException ex){
                         ex.printStackTrace();
@@ -95,7 +99,7 @@ public class Client {
             }
             try{
                 socket.close();
-                System.out.println("Verbindung zum Server geschlossen!");
+                Monopoly.debug("Connection lost");
             }catch (IOException e){
                 e.printStackTrace();
             }

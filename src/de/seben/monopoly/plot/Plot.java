@@ -7,9 +7,9 @@ import java.util.ArrayList;
 public class Plot {
 
     private int id; //Position des Grundstücks auf dem Spielbrett
-    private int streetID; //ID von der Straße
+    private Street street; //Farbe der Straße
     private int[] rents; //Alle möglichen Mieten
-    private int posRents; //Zeiger für die aktuelle Miete
+    private int amountHouses; //Zeiger für die aktuelle Miete
     private String name; //Name des Grundstücks
     private int[][] posForPlaces; //Position der Platzierung für eine Spielfigur ("Vektor", beginnend von der Ecke oben links des Grundstücks)
     private User[] shownVisitors; //angezeigte Besucher
@@ -17,23 +17,25 @@ public class Plot {
     private User owner;
     private PlotAction effect; //auszuführender Effekt beim Betreten des Geländes
 
-    public Plot(int id, int streetID, int[] rents, String name, int[][] posForPlaces, PlotAction effect){
+    public Plot(int id, Street street, int[] rents, String name, int[][] posForPlaces, PlotAction effect){
         this.id = id;
-        this.streetID = streetID;
+        this.street = street;
+        this.street.addPlot(this);
         this.rents = rents;
-        posRents = 0;
+        this.amountHouses = 0;
         this.name = name;
         this.posForPlaces = posForPlaces;
-        shownVisitors = new User[posForPlaces.length];
-        visitors = new ArrayList<>();
+        this.shownVisitors = new User[posForPlaces.length];
+        this.visitors = new ArrayList<>();
         this.effect = effect;
     }
 
     public void addVisitor(User user){ //Neuen Besucher des Grundstücks (user) hinzufügen -> Spieler kommt grad an
         int pos = -1;
-        for (int i = 0; i < shownVisitors.length && pos == -1; i++){
+        for (int i = 0; i < shownVisitors.length; i++){
             if (shownVisitors[i] == null){
                 pos = i;
+                break;
             }
         }
         visitors.add(user);
@@ -71,10 +73,10 @@ public class Plot {
     }
 
     public boolean changeAmountHouse(int amount){
-        if (posRents + amount <= 0 || posRents + amount >= rents.length){
+        if (amountHouses + amount <= 0 || amountHouses + amount >= rents.length){
             return false;
         }
-        posRents += amount;
+        amountHouses += amount;
         return true;
     }
 
@@ -93,11 +95,17 @@ public class Plot {
 
     public User getOwner(){ return owner; }
 
-    public void setPosRents(int posRents){ this.posRents = posRents; }
+    public void setAmountHouses(int amount){ this.amountHouses = amount; }
+    public int getAmountHouses(){
+        return this.amountHouses;
+    }
     public int getID(){
         return this.id;
     }
     public PlotAction getEffect(){
         return this.effect;
+    }
+    public Street getStreet(){
+        return this.street;
     }
 }

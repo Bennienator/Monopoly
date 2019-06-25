@@ -34,7 +34,6 @@ public class ClientConnection extends Thread{
         }catch (IOException e){
             e.printStackTrace();
         }
-        long start = System.currentTimeMillis();
         while(socket != null){
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
