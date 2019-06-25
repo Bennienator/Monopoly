@@ -94,4 +94,10 @@ public class Plot {
     public User getOwner(){ return owner; }
 
     public void setPosRents(int posRents){ this.posRents = posRents; }
+    public int getID(){
+        return this.id;
+    }
+    public PlotAction getEffect(){
+        return this.effect;
+    }
 }

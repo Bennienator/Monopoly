@@ -27,15 +27,14 @@ public class Client {
             } catch (Exception e) {
                 if(e instanceof UnknownHostException){
                     System.out.println("Der Host wurde nicht gefunden");
-                }
-                if(e instanceof ConnectException){
+                }else if(e instanceof ConnectException){
                     System.out.println("Der Port ist nicht geöffnet!");
-                }
-                if(e instanceof IOException){
+                }else if(e instanceof IOException){
                     e.printStackTrace();
                 }
                 try {
-                    Thread.sleep(1000);
+                    System.out.println("Trying again in 10 sec...");
+                    Thread.sleep(10000);
                 }catch (InterruptedException ex){
                     ex.printStackTrace();
                 }

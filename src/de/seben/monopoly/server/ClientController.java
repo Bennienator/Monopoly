@@ -12,57 +12,81 @@ public class ClientController {
 
     private static ClientController instance;
 
-    private HashMap<String, ClientConnection> clients = new HashMap<>();
-    private ArrayList<String> keys = new ArrayList<>();
+    private HashMap<Integer, ClientConnection> clients = new HashMap<>();
     private ServerEngine engine;
-    private int amountConnections = 0;
 
     public static ClientController getInstance(){
         if(instance == null)
             instance = new ClientController();
         return instance;
     }
+    private boolean running;
 
     private ClientController(){
         engine = new ServerEngine();
     }
 
+    public ClientController start(){
+        if(!running){
+            running = true;
+            for(int i = 0; i < 4; i++){
+                createNewClientConnection(Server.getInstance().getSocket());
+            }
+        }
+        return this;
+    }
+
     public void createNewClientConnection(ServerSocket server){
         if(clients.size() < 4){
-            ClientConnection con = new ClientConnection(server);
-            clients.put("Slot" + amountConnections, con);
-            keys.add("Slot" + amountConnections);
-            amountConnections++;
-            con.start();
+            for(int i = 0; i < 4; i++){
+                if(!clients.containsKey(i)){
+                    ClientConnection con = new ClientConnection(server);
+                    clients.put(i, con);
+                    con.start();
+                    return;
+                }
+            }
         }
     }
 
-    public void connect(String nameUser, ClientConnection con){
-        clients.remove(con);
+    public void preRegisterPlayer(ClientConnection connection){
+        connection.setUser(engine.addUser(connection.getID()));
     }
 
-    public void sendCommand(Command output, String... recipients){
-        ArrayList<String> nameList = new ArrayList<>(Arrays.asList(recipients));
-        for (int i = 0; i < nameList.size(); i++) {
-            ClientConnection recipientConnection = clients.get(nameList.get(i));
-            recipientConnection.sendCommand(output);
+    public void disconnect(ClientConnection connection){
+        for(int i : clients.keySet()){
+            if(clients.get(i).equals(connection)){
+                engine.removeUser(userID);
+                clients.remove(i);
+                createNewClientConnection(Server.getInstance().getSocket()); //Prepare socket for next connection
+                return;
+            }
         }
     }
 
-    public void broadcastCommand(Command output){
-        for (int i = 0; i < clients.size(); i++){
-            if (!keys.get(i).equals("")) clients.get(keys.get(i)).sendCommand(output);
+    public void sendCommand(Command command, User... recipients){
+        ArrayList<User> userList = new ArrayList<>(Arrays.asList(recipients));
+        for (User user : userList) {
+            clients.get(user.getID()).sendCommand(command);
         }
     }
 
-    public void analyseCommand(Command input){
-        CommandType cmdType = input.getCmdType();
-        ArrayList<String> args = input.getArgs();
+    public void broadcastCommand(Command command){
+        for(ClientConnection connection : clients.values()){
+            connection.sendCommand(command);
+        }
+    }
+
+    public void analyseIncommingCommand(Command command){
+        CommandType cmdType = command.getCmdType();
+        ArrayList<String> args = command.getArgs();
         switch (cmdType){
             case END_OF_ROUND: // args: null
-                engine.startRound();
+                engine.nextRound();
                 break;
-            case CLAIM_PLOT: // args: Name des Spielers, plotID
+            case CLAIM_PLOT: // args: PlayerID, plotID
+                int userID = Integer.valueOf(args.get(0));
+                int plotID = Integer.valueOf(args.get(1));
                 break;
             case BUILD_HOUSE: // args: plotID
                 engine.changeAmountHouses(Integer.valueOf(args.get(1)), 1);
@@ -70,24 +94,15 @@ public class ClientController {
             case REMOVE_HOUSE: // args: plotID
                 engine.changeAmountHouses(Integer.valueOf(args.get(0)), -1);
                 break;
-            case PAY: // args: Name des Spielers, Höhe des Betrages, Name des Zielspielers
-                engine.changeBalance(args.get(0), -1 * Integer.valueOf(args.get(1)));
-                engine.changeBalance(args.get(2), Integer.valueOf(args.get(1)));
+            case PAY: // args: PlayerID, Höhe des Betrages, Name des Zielspielers
+                engine.changeBalance(Integer.valueOf(args.get(0)), -1 * Integer.valueOf(args.get(1)));
+                engine.changeBalance(Integer.valueOf(args.get(2)), Integer.valueOf(args.get(1)));
                 break;
-            case EARN: // args: Name des Spielers, Höhe des Betrages
-                engine.changeBalance(args.get(0), Integer.valueOf(args.get(1)));
+            case EARN: // args: PlayerID, Höhe des Betrages
+                engine.changeBalance(Integer.valueOf(args.get(0)), Integer.valueOf(args.get(1)));
                 break;
-            case DISCONNECT: // args: Name des Spielers
-                String nameUser = args.get(0);
-                engine.removeUser(nameUser);
-                ClientConnection con = clients.remove(nameUser);
-                keys.remove(nameUser);
-                clients.put("", con);
-                keys.add("");
-                con.start();
-                break;
-            case CHAT: // args: Name des Spielers, Nachricht
-                String username = args.get(0);
+            case CHAT: // args: PlayerID, Nachricht
+                int id = Integer.valueOf(args.get(0));
                 String message = String.join(" ", args.subList(1, args.size() - 1));
                 break;
         }

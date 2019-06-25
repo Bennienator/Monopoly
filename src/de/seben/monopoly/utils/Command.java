@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 public class Command implements Serializable {
 
+    private static final long serialVersionUID = 129348938L;
+
     private CommandType cmdType;
     private ArrayList<String> args;
 

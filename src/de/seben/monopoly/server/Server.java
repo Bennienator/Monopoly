@@ -5,21 +5,34 @@ import java.net.ServerSocket;
 
 public class Server {
 
+    private static Server instance;
+    public static Server getInstance(){
+        if(instance == null)
+            instance = new Server();
+        return instance;
+    }
+    private boolean running;
+
     private ServerSocket serverSocket;
+    private ClientController controller;
 
-    public Server(){
+    private Server(){}
 
-        System.out.println("Servus! Ich bin ein Server.");
-        try {
-            serverSocket = new ServerSocket(7777);
-        }catch (IOException e){
-            e.printStackTrace();
+    public void start(){
+        if(!running){
+            running = true;
+            System.out.println("Servus! Ich bin ein Server.");
+            try {
+                serverSocket = new ServerSocket(7777);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            this.controller = ClientController.getInstance().start();
         }
+    }
 
-        for(int i = 0; i < 4; i++){
-            ClientController.getInstance().createNewClientConnection(serverSocket);
-        }
-
+    public ServerSocket getSocket(){
+        return this.serverSocket;
     }
 
 }

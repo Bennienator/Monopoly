@@ -14,7 +14,8 @@ public class ClientConnection extends Thread{
 
     private ServerSocket server;
     private Socket socket;
-    private String name;
+    private int id;
+    private User user;
 
     public ClientConnection(ServerSocket server){
         this.server = server;
@@ -24,30 +25,17 @@ public class ClientConnection extends Thread{
         try {
             while (socket == null) {
                 socket = server.accept();
+                ClientController.getInstance().preRegisterPlayer(this);
             }
         }catch (IOException e){
             e.printStackTrace();
         }
         long start = System.currentTimeMillis();
-        boolean shutdown;
-        try {
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            ClientController.getInstance().analyseCommand((Command) ois.readObject());
-        } catch (EOFException e) {
-            try {
-                sleep(10);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        while(true){
+        while(socket != null){
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Command in = (Command) ois.readObject();
-                ClientController.getInstance().analyseCommand(in);
-                if (in.getCmdType() == CommandType.DISCONNECT) return;
+                ClientController.getInstance().analyseIncommingCommand(in);
             }catch (EOFException e){
                 try {
                     sleep(10);
@@ -58,6 +46,8 @@ public class ClientConnection extends Thread{
                 e.printStackTrace();
             }
         }
+        System.out.println("Client disconnected");
+        ClientController.getInstance().disconnect(this);
     }
 
     public void sendCommand(Command output){
@@ -69,6 +59,15 @@ public class ClientConnection extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public int getID(){
+        return this.id;
+    }
+    public void setUser(User user){
+        this.user = user;
+    }
+    public User getUser(){
+        return this.user;
     }
 
 }
