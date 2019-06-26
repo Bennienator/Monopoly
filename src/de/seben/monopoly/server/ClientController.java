@@ -1,5 +1,6 @@
 package de.seben.monopoly.server;
 
+import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
@@ -14,6 +15,7 @@ public class ClientController {
     private static ClientController instance;
 
     private HashMap<Integer, ClientConnection> clients = new HashMap<>();
+
     private ServerEngine engine;
 
     public static ClientController getInstance(){
@@ -25,7 +27,7 @@ public class ClientController {
 
     private ClientController(){
         Monopoly.debug("Created instance");
-        engine = ServerEngine.getInstance();
+        engine = Server.getInstance().getEngine();
     }
 
     public ClientController start(){
@@ -55,6 +57,7 @@ public class ClientController {
     public void preRegisterPlayer(ClientConnection connection){
         connection.setUser(engine.addUser(connection.getID()));
         sendCommand(new Command(CommandType.LOGIN), connection.getUser());
+        sendCommand(new Command(CommandType.DISCONNECT), connection.getUser());
     }
 
     public void disconnect(ClientConnection connection){
@@ -68,20 +71,7 @@ public class ClientController {
         }
     }
 
-    public void sendCommand(Command command, User... recipients){
-        ArrayList<User> userList = new ArrayList<>(Arrays.asList(recipients));
-        for (User user : userList) {
-            clients.get(user.getID()).sendCommand(command);
-        }
-    }
-
-    public void broadcastCommand(Command command){
-        for(ClientConnection connection : clients.values()){
-            connection.sendCommand(command);
-        }
-    }
-
-    public void analyseIncommingCommand(Command command){
+    public void analyseIncommingCommand(Command command, ClientConnection reciever){
         CommandType cmdType = command.getCmdType();
         ArrayList<String> args = command.getArgs();
         switch (cmdType){
@@ -109,6 +99,21 @@ public class ClientController {
                 int id = Integer.valueOf(args.get(0));
                 String message = String.join(" ", args.subList(1, args.size() - 1));
                 break;
+            case DISCONNECT:
+                Server.getInstance().getEvents().executeEvent(new UserQuitEvent(reciever.getUser()));
+        }
+    }
+
+    public void sendCommand(Command command, User... recipients){
+        ArrayList<User> userList = new ArrayList<>(Arrays.asList(recipients));
+        for (User user : userList) {
+            clients.get(user.getID()).sendCommand(command);
+        }
+    }
+
+    public void broadcastCommand(Command command){
+        for(ClientConnection connection : clients.values()){
+            connection.sendCommand(command);
         }
     }
 

@@ -50,7 +50,7 @@ public class ServerEngine {
     public void nextRound(){
         actUser = (actUser + 1) % users.size();
         User user = users.get(actUser);
-        ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, user.getName() + " ist nun an der Reihe."));
+        Server.getInstance().getController().broadcastCommand(new Command(CommandType.MESSAGE, user.getName() + " ist nun an der Reihe."));
         int cubeOne = 0, cubeTwo = 0;
         for (int cubed = 1; cubeOne == cubeTwo; cubed++){
             Random random = new Random();
@@ -58,7 +58,7 @@ public class ServerEngine {
             cubeTwo = 1 + random.nextInt(6);
             if (cubed == 3 && cubeOne == cubeTwo){
                 intoPrison(actUser);
-                ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, "Weil " + user.getName() + " 3 Päsche hintereinander gewürfelt hat, muss er nun in das Gefängnis."));
+                Server.getInstance().getController().broadcastCommand(new Command(CommandType.MESSAGE, "Weil " + user.getName() + " 3 Päsche hintereinander gewürfelt hat, muss er nun in das Gefängnis."));
                 nextRound();
                 return;
             }
@@ -66,7 +66,7 @@ public class ServerEngine {
             plots[user.getPosition()].removeVisitor(user);
             int newPos = user.move(moves);
             plots[newPos].addVisitor(user);
-            ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(actUser), String.valueOf(newPos)));
+            Server.getInstance().getController().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(actUser), String.valueOf(newPos)));
             plots[newPos].activateEffect(user);
         }
 
@@ -79,7 +79,7 @@ public class ServerEngine {
     public void changeBalance(int userID, int amount){
         User user = users.get(userID);
         CommandType outputType = user.changeBalance(amount) ? CommandType.ACCEPT : CommandType.REFUSE;
-        ClientController.getInstance().sendCommand(new Command(outputType), user);
+        Server.getInstance().getController().sendCommand(new Command(outputType), user);
     }
 
     public void intoPrison(int userID){
@@ -87,7 +87,7 @@ public class ServerEngine {
         plots[user.getPosition()].removeVisitor(user);
         user.setPosition(40);
         plots[40].addVisitor(user);
-        ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(userID), String.valueOf(40)));
+        Server.getInstance().getController().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(userID), String.valueOf(40)));
     }
 
 }

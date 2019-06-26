@@ -6,7 +6,7 @@ import de.seben.monopoly.events.Event;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.server.User;
 
-public class UserQuitListener implements EventListener{
+public class UserQuitListener implements EventListener {
 
     @Event
     public void onQuit(UserQuitEvent event){

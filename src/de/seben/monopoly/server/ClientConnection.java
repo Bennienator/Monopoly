@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientConnection extends Thread{
 
@@ -35,12 +36,12 @@ public class ClientConnection extends Thread{
         }catch (IOException e){
             e.printStackTrace();
         }
-        while(socket != null){
+        while(socket.isConnected()){
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Command in = (Command) ois.readObject();
                 Monopoly.debug("Command incomming");
-                ClientController.getInstance().analyseIncommingCommand(in);
+                Server.getInstance().getController().analyseIncommingCommand(in, this);
             }catch (EOFException e){
                 try {
                     sleep(10);
@@ -52,7 +53,7 @@ public class ClientConnection extends Thread{
             }
         }
         Server.getInstance().getEvents().executeEvent(new UserQuitEvent(user));
-        Monopoly.debug("Socket is null");
+        Monopoly.debug("Disconnected");
         ClientController.getInstance().disconnect(this);
     }
 
@@ -61,6 +62,7 @@ public class ClientConnection extends Thread{
             if (socket != null) {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.writeObject(output);
+                oos.close();
             }
         } catch (IOException e) {
             e.printStackTrace();

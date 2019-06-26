@@ -24,8 +24,6 @@ public class Server {
     private ServerEngine engine;
     private EventManager events;
 
-
-
     private Server(){
         Monopoly.debug("Created instance");
     }

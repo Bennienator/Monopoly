@@ -14,7 +14,7 @@ public class Monopoly {
         for(String arg : args){
             if(arg.equalsIgnoreCase("debug") && !debug){
                 debug = true;
-                debug("Debugging enabled");
+                Monopoly.debug("Debugging enabled");
             }else if(arg.equalsIgnoreCase("server") && !server){
                 server = true;
                 Server.getInstance().start();
