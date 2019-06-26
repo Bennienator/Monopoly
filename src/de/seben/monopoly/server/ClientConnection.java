@@ -24,7 +24,7 @@ public class ClientConnection extends Thread{
     }
 
     public void run(){
-        Monopoly.debug("Waiting for client connection");
+        Monopoly.debug("Waiting");
         try {
             while (socket == null) {
                 socket = server.accept();

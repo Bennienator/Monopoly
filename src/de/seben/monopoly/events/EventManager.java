@@ -1,24 +1,31 @@
 package de.seben.monopoly.events;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.lang.reflect.Method;
+import java.lang.Class;
+import java.lang.annotation.Annotation;
 
-public class EventExecutor {
+import de.seben.monopoly.main.Monopoly;
+
+public class EventManager {
+
+    public EventManager() {
+        Monopoly.debug("Created instance");
+        this.bindings = new HashMap<Class<? extends IEvent>, Collection<EventHandler>>();
+        this.registeredListeners = new HashSet<EventListener>();
+    }
+
     public static final int PRE = -1;
     public static final int ALL = 0;
     public static final int POST = 1;
 
-    private final Map<Class<? extends IEvent>, Collection<EventHandler>> bindings;
-    private final Set<EventListener> registeredListeners;
-
-    private boolean debug = false;
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    public EventExecutor() {
-        this.bindings = new HashMap<Class<? extends IEvent>, Collection<EventHandler>>();
-        this.registeredListeners = new HashSet<>();
-    }
+    private Map<Class<? extends IEvent>, Collection<EventHandler>> bindings;
+    private Set<EventListener> registeredListeners;
 
     public List<EventHandler> getListenersFor(Class<? extends IEvent> clazz) {
         if (!this.bindings.containsKey(clazz))
@@ -29,12 +36,10 @@ public class EventExecutor {
     public <T extends IEvent> T executeEvent(T event, int i) {
         Collection<EventHandler> handlers = this.bindings.get(event.getClass());
         if (handlers == null) {
-            if (this.debug)
-                CustomFacade.getLog().d("Event " + event.getClass().getSimpleName() + " has no handlers.");
+            Monopoly.debug("Event " + event.getClass().getSimpleName() + " has no handlers.");
             return event;
         }
-        if (this.debug)
-            CustomFacade.getLog().d("Event " + event.getClass().getSimpleName() + " has " + handlers.size() + " handlers.");
+        Monopoly.debug("Event " + event.getClass().getSimpleName() + " has " + handlers.size() + " handlers.");
         for (EventHandler handler : handlers) {
             // Basic support for multi-stage events. More can be added later by specifying exactly which priority to be executed - executeEventPre(event, lessThanPriority) for example
             if (i == PRE && handler.getPriority() >= 0)
@@ -51,30 +56,38 @@ public class EventExecutor {
     }
 
     public void registerListener(EventListener listener) {
-        CustomFacade.getLog().v("Register event listener: " + listener);
+        Monopoly.debug("Trying to register new event listener: " + listener.getClass().getSimpleName());
 
         if (registeredListeners.contains(listener)) {
-            CustomFacade.getLog().w("Listener already registred: " + listener);
+            Monopoly.debug("Listener already registred: " + listener.getClass().getSimpleName());
             return;
         }
 
         Method[] methods = listener.getClass().getDeclaredMethods();
         this.registeredListeners.add(listener);
+        Monopoly.debug("Found " + methods.length + " methods in " + listener.getClass().getSimpleName());
         for (Method method : methods) {
+            Monopoly.debug("-> " + method.getName());
             Event annotation = method.getAnnotation(Event.class);
-            if (annotation == null)
-                continue;
-
-            Class<?>[] parameters = method.getParameterTypes();
-            if (parameters.length != 1) // all listener methods should only have one parameter
-                continue;
-
-            Class<?> param = parameters[0];
-
-            if (!method.getReturnType().equals(void.class)) {
-                CustomFacade.getLog().w("Ignoring method due to non-void return: " + method.getName());
+            if (annotation == null){
+                Monopoly.debug("annotation = null");
                 continue;
             }
+            Monopoly.debug(annotation.toString());
+
+            Class<?>[] params = method.getParameterTypes();
+            if (params.length != 1){
+                continue;
+            }
+
+            Class<?> param = params[0];
+
+            if (!method.getReturnType().equals(void.class)) {
+                Monopoly.debug("Ignoring method due to non-void return: " + method.getName());
+                continue;
+            }
+
+            Monopoly.debug(param.getSimpleName());
 
             if (IEvent.class.isAssignableFrom(param)) {
                 @SuppressWarnings("unchecked") // Java just doesn't understand that this actually is a safe cast because of the above if-statement
@@ -84,7 +97,7 @@ public class EventExecutor {
                     this.bindings.put(realParam, new TreeSet<EventHandler>());
                 }
                 Collection<EventHandler> eventHandlersForEvent = this.bindings.get(realParam);
-                CustomFacade.getLog().v("Add listener method: " + method.getName() + " for event " + realParam.getSimpleName());
+                Monopoly.debug("Add listener method: " + method.getName() + " for event " + realParam.getSimpleName());
                 eventHandlersForEvent.add(createEventHandler(listener, method, annotation));
             }
         }

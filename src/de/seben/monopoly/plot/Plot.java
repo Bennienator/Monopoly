@@ -102,6 +102,9 @@ public class Plot {
     public int getID(){
         return this.id;
     }
+    public String getName(){
+        return this.name;
+    }
     public PlotAction getEffect(){
         return this.effect;
     }

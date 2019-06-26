@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 
+import de.seben.monopoly.events.EventManager;
 import de.seben.monopoly.main.Monopoly;
+import de.seben.monopoly.server.listeners.UserQuitListener;
 
 public class Server {
 
@@ -14,11 +16,15 @@ public class Server {
             instance = new Server();
         return instance;
     }
+
     private boolean running;
 
     private ServerSocket serverSocket;
     private ClientController controller;
     private ServerEngine engine;
+    private EventManager events;
+
+
 
     private Server(){
         Monopoly.debug("Created instance");
@@ -43,6 +49,8 @@ public class Server {
                 Monopoly.debug("Started");
                 this.controller = ClientController.getInstance().start();
                 this.engine = ServerEngine.getInstance();
+                this.events = new EventManager();
+                events.registerListener(new UserQuitListener());
             }
         }
     }
