@@ -45,7 +45,7 @@ public class Server {
                 Monopoly.debug("Exiting");
                 System.exit(-1);
             }
-            if(serverSocket != null){
+            if(serverSocket.isBound()){
                 Monopoly.debug("Started");
                 this.controller = ClientController.getInstance().start();
                 this.engine = ServerEngine.getInstance();

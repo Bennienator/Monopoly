@@ -1,5 +1,10 @@
 package de.seben.monopoly.events;
 
+import de.seben.monopoly.main.Monopoly;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class EventHandler implements Comparable<EventHandler>{
 
     private final EventListener listener;
@@ -26,12 +31,8 @@ public class EventHandler implements Comparable<EventHandler>{
     public void execute(IEvent event) {
         try {
             method.invoke(listener, event);
-        } catch (IllegalAccessException e1) {
-            CustomFacade.getLog().e("Exception when performing EventHandler " + this.listener + " for event " + event.toString(), e1);
-        } catch (IllegalArgumentException e1) {
-            CustomFacade.getLog().e("Exception when performing EventHandler " + this.listener + " for event " + event.toString(), e1);
-        } catch (InvocationTargetException e1) {
-            CustomFacade.getLog().e("Exception when performing EventHandler " + this.listener + " for event " + event.toString(), e1);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            Monopoly.debug("Exception when performing EventHandler " + this.listener + " for event " + event.toString() + "\n -> " + e.getMessage());
         }
     }
     @Override

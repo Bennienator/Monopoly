@@ -1,11 +1,6 @@
 package de.seben.monopoly.events;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.lang.reflect.Method;
 import java.lang.Class;
 import java.lang.annotation.Annotation;
@@ -113,7 +108,7 @@ public class EventManager {
     }
 
     public void removeListener(EventListener listener) {
-        for (Entry<Class<? extends IEvent>, Collection<EventHandler>> ee : bindings.entrySet()) {
+        for (Map.Entry<Class<? extends IEvent>, Collection<EventHandler>> ee : bindings.entrySet()) {
             Iterator<EventHandler> it = ee.getValue().iterator();
             while (it.hasNext()) {
                 EventHandler curr = it.next();

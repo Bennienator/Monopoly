@@ -5,7 +5,6 @@ import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -19,7 +18,7 @@ public class ServerEngine {
     }
 
     private Plot[] plots;
-    private HashMap<Integer, User> users;
+    private HashMap<Integer, User> users = new HashMap<>();
     private int actUser;
 
     private ServerEngine(){
@@ -31,7 +30,6 @@ public class ServerEngine {
         Monopoly.debug("Initializing...");
         plots = new Plot[41]; //0-39: Spielrunde (0: Start), 40 = Feld für Gefängnisinsassen (10: Gefängnisbesucher)
         //TODO: Alle Spielfelder erstellen
-        users = new HashMap<>();
     }
 
     public User addUser(int id){ //Preregistration
@@ -49,7 +47,7 @@ public class ServerEngine {
         users.remove(userID);
     }
 
-    public void nextPlayer(){
+    public void nextRound(){
         actUser = (actUser + 1) % users.size();
         User user = users.get(actUser);
         ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, user.getName() + " ist nun an der Reihe."));
@@ -61,14 +59,14 @@ public class ServerEngine {
             if (cubed == 3 && cubeOne == cubeTwo){
                 intoPrison(actUser);
                 ClientController.getInstance().broadcastCommand(new Command(CommandType.MESSAGE, "Weil " + user.getName() + " 3 Päsche hintereinander gewürfelt hat, muss er nun in das Gefängnis."));
-                nextPlayer();
+                nextRound();
                 return;
             }
             int moves = cubeOne + cubeTwo;
             plots[user.getPosition()].removeVisitor(user);
             int newPos = user.move(moves);
             plots[newPos].addVisitor(user);
-            ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, actUser, newPos));
+            ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(actUser), String.valueOf(newPos)));
             plots[newPos].activateEffect(user);
         }
 
@@ -89,7 +87,7 @@ public class ServerEngine {
         plots[user.getPosition()].removeVisitor(user);
         user.setPosition(40);
         plots[40].addVisitor(user);
-        ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, userID, 40));
+        ClientController.getInstance().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(userID), String.valueOf(40)));
     }
 
 }

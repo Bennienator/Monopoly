@@ -2,6 +2,7 @@ package de.seben.monopoly.events;
 
 import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.plot.PlotAction;
+import de.seben.monopoly.server.User;
 
 public class MoveEvent implements IEvent {
 
@@ -31,7 +32,7 @@ public class MoveEvent implements IEvent {
     public int distance(){
         return this.distance;
     }
-    public PlotAction(){
+    public PlotAction PlotAction(){
         return this.action;
     }
 

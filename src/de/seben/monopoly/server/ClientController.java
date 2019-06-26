@@ -59,9 +59,9 @@ public class ClientController {
     public void disconnect(ClientConnection connection){
         for(int i : clients.keySet()){
             if(clients.get(i).equals(connection)){
-                engine.removeUser(userID);
+                engine.removeUser(i);
                 clients.remove(i);
-                createNewClientConnection(Server.getInstance().getSocket()); //Prepare socket for next connection
+                createNewClientConnection(Server.getInstance().getSocket());
                 return;
             }
         }
