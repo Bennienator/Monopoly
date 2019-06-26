@@ -19,7 +19,8 @@ public enum CommandType implements Serializable {
     ACCEPT("ACPT"),
     DISCONNECT("DC"),
     REFUSE("RFS"),
-    CHAT("CHAT");
+    CHAT("CHAT"),
+    LOGIN("LOGIN");
 
     private String command;
 

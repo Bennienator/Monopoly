@@ -59,4 +59,15 @@ public class Server {
         return this.serverSocket;
     }
 
+    public ClientController getController() {
+        return controller;
+    }
+
+    public ServerEngine getEngine() {
+        return engine;
+    }
+
+    public EventManager getEvents() {
+        return events;
+    }
 }

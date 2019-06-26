@@ -54,6 +54,7 @@ public class ClientController {
 
     public void preRegisterPlayer(ClientConnection connection){
         connection.setUser(engine.addUser(connection.getID()));
+        sendCommand(new Command(CommandType.LOGIN), connection.getUser());
     }
 
     public void disconnect(ClientConnection connection){
