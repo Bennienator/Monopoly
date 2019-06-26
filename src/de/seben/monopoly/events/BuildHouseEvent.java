@@ -1,6 +1,7 @@
 package de.seben.monopoly.events;
 
 import de.seben.monopoly.plot.Plot;
+import de.seben.monopoly.server.User;
 
 public class BuildHouseEvent implements IEvent {
 
@@ -26,11 +27,11 @@ public class BuildHouseEvent implements IEvent {
     public int getPricePerHouse(){
         return plot.getStreet().getPricePerHouse();
     }
-    public int getBuildHouses(){
-        return houseAmount - before.getAmountHouses();
-    }
     public int getHouses(){
         return plot.getAmountHouses();
+    }
+    public int getBuildHouses(){
+        return getHouses() - before.getAmountHouses();
     }
 
 }

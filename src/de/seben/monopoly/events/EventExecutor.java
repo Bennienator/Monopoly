@@ -1,5 +1,7 @@
 package de.seben.monopoly.events;
 
+import java.util.*;
+
 public class EventExecutor {
     public static final int PRE = -1;
     public static final int ALL = 0;
@@ -15,7 +17,7 @@ public class EventExecutor {
 
     public EventExecutor() {
         this.bindings = new HashMap<Class<? extends IEvent>, Collection<EventHandler>>();
-        this.registeredListeners = new HashSet<EventListener>();
+        this.registeredListeners = new HashSet<>();
     }
 
     public List<EventHandler> getListenersFor(Class<? extends IEvent> clazz) {
