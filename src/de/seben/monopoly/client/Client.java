@@ -1,5 +1,7 @@
 package de.seben.monopoly.client;
 
+import de.seben.monopoly.client.listeners.CommandRecieveListener;
+import de.seben.monopoly.events.EventManager;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
@@ -22,6 +24,7 @@ public class Client {
     private Socket socket;
     private SpielfeldFrame frame;
     private CommandHandler handler;
+    private EventManager events;
 
     private boolean running;
 
@@ -37,6 +40,8 @@ public class Client {
                 try {
                     socket = new Socket("localhost", 7777);
                     Monopoly.debug("Socket connected");
+                    events = new EventManager();
+                    events.registerListener(new CommandRecieveListener());
                     handler = new CommandHandler(this);
                     handler.start();
                 } catch (Exception e) {
@@ -87,19 +92,38 @@ public class Client {
     }
 
     public Socket getSocket(){ return socket; }
+    public CommandHandler getHandler(){
+        return this.handler;
+    }
+    public EventManager getEvents(){
+        return this.events;
+    }
+
+    public void sendMessageToServer(Command outCommand){
+        if(socket.isConnected()){
+            try{
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeObject(outCommand);
+                Monopoly.debug("Send command: " + outCommand.getCmdType().name() + " " + String.join(" ", outCommand.getArgs()));
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
 
     public void disconnect(){
-        if(socket != null){
+        if(socket.isConnected()){
             try {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.writeObject(new Command(CommandType.DISCONNECT));
+                Monopoly.debug("Send Command: " + CommandType.DISCONNECT.name());
                 oos.close();
             }catch (IOException e){
                 e.printStackTrace();
             }
             try{
                 socket.close();
-                Monopoly.debug("Connection lost");
+                Monopoly.debug("Connection closed");
             }catch (IOException e){
                 e.printStackTrace();
             }

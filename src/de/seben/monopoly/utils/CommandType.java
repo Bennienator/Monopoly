@@ -20,7 +20,8 @@ public enum CommandType implements Serializable {
     DISCONNECT("DC"),
     REFUSE("RFS"),
     CHAT("CHAT"),
-    LOGIN("LOGIN");
+    LOGIN("LOGIN"),
+    READY("RDY");
 
     private String command;
 

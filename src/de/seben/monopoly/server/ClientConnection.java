@@ -1,5 +1,6 @@
 package de.seben.monopoly.server;
 
+import de.seben.monopoly.events.ServerCommandRecieveEvent;
 import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
@@ -19,20 +20,23 @@ public class ClientConnection extends Thread{
     private Socket socket;
     private int id;
     private User user;
+    private ClientController controller;
 
-    public ClientConnection(ServerSocket server){
+    public ClientConnection(ServerSocket server, int id){
         Monopoly.debug("Created instance");
         this.server = server;
+        this.id = id;
+        this.controller = ClientController.getInstance();
     }
 
     public void run(){
         Monopoly.debug("Waiting");
         try {
-            while (socket == null) {
+            while (!socket.isConnected()) {
                 socket = server.accept();
-                Monopoly.debug("Socket accepted");
-                ClientController.getInstance().preRegisterPlayer(this);
             }
+            Monopoly.debug("(" + this.id + ") Socket accepted");
+            ClientController.getInstance().preRegisterPlayer(this);
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -40,8 +44,7 @@ public class ClientConnection extends Thread{
             try {
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 Command in = (Command) ois.readObject();
-                Monopoly.debug("Command incomming");
-                Server.getInstance().getController().analyseIncommingCommand(in, this);
+                Server.getInstance().getEvents().executeEvent(new ServerCommandRecieveEvent(this.user, in));
             }catch (EOFException e){
                 try {
                     sleep(10);
@@ -52,9 +55,8 @@ public class ClientConnection extends Thread{
                 e.printStackTrace();
             }
         }
-        Server.getInstance().getEvents().executeEvent(new UserQuitEvent(user));
+        Server.getInstance().getEvents().executeEvent(new UserQuitEvent(this));
         Monopoly.debug("Disconnected");
-        ClientController.getInstance().disconnect(this);
     }
 
     public void sendCommand(Command output){

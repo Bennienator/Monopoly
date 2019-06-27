@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 
 import de.seben.monopoly.events.EventManager;
 import de.seben.monopoly.main.Monopoly;
+import de.seben.monopoly.server.listeners.CommandRecieveListener;
 import de.seben.monopoly.server.listeners.UserQuitListener;
 
 public class Server {
@@ -49,6 +50,7 @@ public class Server {
                 this.engine = ServerEngine.getInstance();
                 this.events = new EventManager();
                 events.registerListener(new UserQuitListener());
+                events.registerListener(new CommandRecieveListener());
             }
         }
     }
