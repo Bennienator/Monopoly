@@ -16,8 +16,6 @@ public class ClientController {
 
     private HashMap<Integer, ClientConnection> clients = new HashMap<>();
 
-    private ServerEngine engine;
-
     public synchronized static ClientController getInstance(){
         if(instance == null)
             instance = new ClientController();
@@ -27,16 +25,13 @@ public class ClientController {
 
     private ClientController(){
         Monopoly.debug("Created instance");
-        engine = Server.getInstance().getEngine();
     }
 
     public ClientController start(){
         if(!running){
             Monopoly.debug("Starting...");
             running = true;
-            for(int i = 0; i < 4; i++){
-                createNewClientConnection(Server.getInstance().getSocket());
-            }
+            createNewClientConnection(Server.getInstance().getSocket());
         }
         return this;
     }
@@ -55,7 +50,8 @@ public class ClientController {
     }
 
     public void preRegisterPlayer(ClientConnection connection){
-        User created = engine.addUser(connection.getID());
+        int id = connection.getID();
+        User created = Server.getInstance().getEngine().addUser(id);
         connection.setUser(created);
     }
 
@@ -85,6 +81,15 @@ public class ClientController {
 
     public ClientConnection getClientConnection(User user){
         return clients.get(user.getID());
+    }
+
+    public boolean isUsernameExisting(String username){
+        for(ClientConnection connection : clients.values()){
+            if(connection.getUser() != null && connection.getUser().getName() != null && connection.getUser().getName().equalsIgnoreCase(username)){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -26,6 +26,8 @@ public class Client {
     private CommandHandler handler;
     private EventManager events;
 
+    private String username;
+
     private boolean running;
 
     private Client(){
@@ -34,15 +36,15 @@ public class Client {
 
     public void start(){
         if(!running){
-            Monopoly.debug("Starting...");
             running = true;
+            Monopoly.debug("Starting...");
+            events = new EventManager();
+            events.registerListener(new CommandRecieveListener());
+            handler = new CommandHandler();
             while(socket == null) {
                 try {
                     socket = new Socket("localhost", 7777);
                     Monopoly.debug("Socket connected");
-                    events = new EventManager();
-                    events.registerListener(new CommandRecieveListener());
-                    handler = new CommandHandler(this);
                     handler.start();
                 } catch (Exception e) {
                     if(e instanceof UnknownHostException){
@@ -99,16 +101,11 @@ public class Client {
         return this.events;
     }
 
-    public void sendMessageToServer(Command outCommand){
-        if(socket.isConnected()){
-            try{
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                oos.writeObject(outCommand);
-                Monopoly.debug("Send command: " + outCommand.getCmdType().name() + " " + String.join(" ", outCommand.getArgs()));
-            }catch(IOException e){
-                e.printStackTrace();
-            }
-        }
+    public void setUsername(String username){
+        this.username = username;
+    }
+    public String getUsername(){
+        return this.username;
     }
 
     public void disconnect(){

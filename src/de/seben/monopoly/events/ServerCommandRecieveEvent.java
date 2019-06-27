@@ -1,5 +1,7 @@
 package de.seben.monopoly.events;
 
+import java.util.ArrayList;
+
 import de.seben.monopoly.server.User;
 import de.seben.monopoly.utils.Command;
 
@@ -7,7 +9,7 @@ public class ServerCommandRecieveEvent implements IEvent{
 
     private User commandSender;
     private Command command;
-    private String[] args;
+    private ArrayList<String> args;
 
     public ServerCommandRecieveEvent(User commandServer, Command command){
         this.commandSender = commandServer;
@@ -22,11 +24,11 @@ public class ServerCommandRecieveEvent implements IEvent{
     public Command getCommand(){
         return this.command;
     }
-    public String[] getArgs(){
+    public ArrayList<String> getArgs(){
         return this.args;
     }
     public String getArg(int index){
-        return this.args[index];
+        return this.args.get(index);
     }
 
 }

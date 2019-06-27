@@ -82,8 +82,6 @@ public class EventManager {
                 continue;
             }
 
-            Monopoly.debug(param.getSimpleName());
-
             if (IEvent.class.isAssignableFrom(param)) {
                 @SuppressWarnings("unchecked") // Java just doesn't understand that this actually is a safe cast because of the above if-statement
                 Class<? extends IEvent> realParam = (Class<? extends IEvent>) param;
@@ -92,7 +90,7 @@ public class EventManager {
                     this.bindings.put(realParam, new TreeSet<EventHandler>());
                 }
                 Collection<EventHandler> eventHandlersForEvent = this.bindings.get(realParam);
-                Monopoly.debug("Add listener method: " + method.getName() + " for event " + realParam.getSimpleName());
+                Monopoly.debug("Successfully added listener method: " + method.getName() + " for event " + realParam.getSimpleName());
                 eventHandlersForEvent.add(createEventHandler(listener, method, annotation));
             }
         }

@@ -3,6 +3,7 @@ package de.seben.monopoly.client.listeners;
 import de.seben.monopoly.client.Client;
 import de.seben.monopoly.events.ClientCommandRecieveEvent;
 import de.seben.monopoly.events.EventListener;
+import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.events.Event;
 import de.seben.monopoly.utils.Command;
 
@@ -15,8 +16,11 @@ public class CommandRecieveListener implements EventListener{
         ArrayList<String> args = event.getArgs();
         Monopoly.debug("Server: " + cmdType.name() + " " + String.join(" ", args));
         switch (cmdType) {
-            case LOGIN:
-                
+            case ACCEPT:
+                if(event.getLastCommand().getCmdType().equals(CommandType.LOGIN)){
+                    Monopoly.debug("Logged in with username '" + event.getLastCommand().getArgs().get(0) + "'");
+                    Client.getInstance().setUsername(event.getLastCommand().getArgs().get(0));
+                }
             case START_ROUND:
                 Client.getInstance().startRound();
                 break;

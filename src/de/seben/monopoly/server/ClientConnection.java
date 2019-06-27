@@ -30,13 +30,14 @@ public class ClientConnection extends Thread{
     }
 
     public void run(){
-        Monopoly.debug("Waiting");
+        Monopoly.debug("Waiting...");
         try {
-            while (!socket.isConnected()) {
+            while (socket == null ) {
                 socket = server.accept();
             }
             Monopoly.debug("(" + this.id + ") Socket accepted");
             ClientController.getInstance().preRegisterPlayer(this);
+            Server.getInstance().getController().createNewClientConnection(this.server);
         }catch (IOException e){
             e.printStackTrace();
         }

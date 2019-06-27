@@ -19,31 +19,26 @@ import java.util.ArrayList;
 public class CommandHandler extends Thread{
 
     private Client client;
+    private Command lastSendCommand;
 
-    public CommandHandler(Client client){
+    public CommandHandler(){
         Monopoly.debug("Created instance");
-        this.client = client;
+        this.client = Client.getInstance();
     }
 
     public void run(){ // Commands vom Server werden bearbeitet
-        Monopoly.debug("Waiting for incomming commands");
+        Monopoly.debug("Waiting...");
         //String username = JOptionPane.showInputDialog(null, "Bitte gebe deinen Benutzernamen ein.", "Monopoly - Login", JOptionPane.QUESTION_MESSAGE);
-        System.out.print("Username: ");
-        try{
-            InputStreamReader reader = new InputStreamReader(System.in);
-            BufferedReader inUsername = new BufferedReader(reader);
-            String username = inUsername.readLine();
-            Client.getInstance().sendMessageToServer(new Command(CommandType.LOGIN, username));
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        String username = "Bennienator";
+        Monopoly.debug("Logging in as '" + username + "'");
+        sendCommandToServer(new Command(CommandType.LOGIN, username));
         while (client.getSocket().isConnected()) {
             try {
                 ObjectInputStream ois = new ObjectInputStream(client.getSocket().getInputStream());
                 Object in;
                 if ((in = ois.readObject()) != null) {
                     Command input = (Command) in;
-                    Client.getInstance().getEvents().executeEvent(new ClientCommandRecieveEvent(input));
+                    Client.getInstance().getEvents().executeEvent(new ClientCommandRecieveEvent(input, lastSendCommand));
                 }
             }catch (EOFException e){
                 try {
@@ -58,11 +53,12 @@ public class CommandHandler extends Thread{
         Monopoly.debug("Disconnected");
     }
 
-    public void sendCommand(Command output){
+    public void sendCommandToServer(Command output){
         try {
-            if (client.getSocket() != null) {
+            if (client.getSocket() != null && client.getSocket().isConnected()) {
                 ObjectOutputStream oos = new ObjectOutputStream(client.getSocket().getOutputStream());
                 oos.writeObject(output);
+                this.lastSendCommand = output;
                 Monopoly.debug("Sending: " + output.getCmdType().name() + " " + String.join(" ", output.getArgs()));
             }
         } catch (IOException e) {

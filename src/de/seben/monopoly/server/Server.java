@@ -46,11 +46,11 @@ public class Server {
             }
             if(serverSocket.isBound()){
                 Monopoly.debug("Started");
-                this.controller = ClientController.getInstance().start();
-                this.engine = ServerEngine.getInstance();
                 this.events = new EventManager();
                 events.registerListener(new UserQuitListener());
                 events.registerListener(new CommandRecieveListener());
+                this.engine = ServerEngine.getInstance();
+                this.controller = ClientController.getInstance().start();
             }
         }
     }

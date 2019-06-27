@@ -32,12 +32,13 @@ public class EventHandler implements Comparable<EventHandler>{
         try {
             method.invoke(listener, event);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            Monopoly.debug("Exception when performing EventHandler " + this.listener + " for event " + event.toString() + "\n -> " + e.getMessage());
+            Monopoly.debug("Exception when performing EventHandler " + this.listener.getClass().getSimpleName() + " for event " + event.getClass().getSimpleName());
+            e.printStackTrace();
         }
     }
     @Override
     public String toString() {
-        return "EventHandler " + this.listener + ": " + method.getName() + "";
+        return "EventHandler " + this.listener.getClass().getSimpleName() + ": " + method.getName() + "";
     }
 
     public int getPriority() {

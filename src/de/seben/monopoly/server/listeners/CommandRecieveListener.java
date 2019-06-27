@@ -8,6 +8,9 @@ import de.seben.monopoly.server.Server;
 import de.seben.monopoly.server.User;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
+
+import java.util.ArrayList;
+
 import de.seben.monopoly.events.Event;
 
 public class CommandRecieveListener implements EventListener{
@@ -18,9 +21,20 @@ public class CommandRecieveListener implements EventListener{
         Command command = event.getCommand();
         CommandType cmdType = command.getCmdType();
         ArrayList<String> args = command.getArgs();
-        Monopoly.debug("Command from " + sender.getName() + "(" + sender.getID() + ")");
+        Monopoly.debug("Command from " + sender.getName() == null ? "UnknownUser" : sender.getName() + " (" + sender.getID() + ")");
         Monopoly.debug(" -> " + cmdType.name() + " " + String.join(" ", args));
         switch (cmdType){
+            case LOGIN:
+                String username = args.get(0);
+                if(Server.getInstance().getController().isUsernameExisting(username)){
+                    Monopoly.debug("Requested username already taken");
+                    Server.getInstance().getController().sendCommand(new Command(CommandType.REFUSE), sender);
+                }else{
+                    sender.setName(username);
+                    Monopoly.debug("Set name from Client " + sender.getID() + " to '" + username + "'");
+                    Server.getInstance().getController().sendCommand(new Command(CommandType.ACCEPT), sender);
+                }
+                break;
             case END_OF_ROUND: // args: null
                 Server.getInstance().getEngine().nextRound();
                 break;
