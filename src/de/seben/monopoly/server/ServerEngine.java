@@ -5,6 +5,8 @@ import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -72,6 +74,17 @@ public class ServerEngine {
 
     }
 
+    public User getUserByUsername(String username){
+        for(User user : users.values()){
+            if(user.getName().equalsIgnoreCase(username))
+                return user;
+        }
+        return null;
+    }
+    public User getUserByID(int id) {
+        return users.get(id);
+    }
+
     public void changeAmountHouses(int plotID, int amount){
         plots[plotID].changeAmountHouse(amount);
     }
@@ -90,4 +103,32 @@ public class ServerEngine {
         Server.getInstance().getController().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(userID), String.valueOf(40)));
     }
 
+    public boolean kickUser(int id) {
+        ClientConnection connection = Server.getInstance().getController().getClientConnection(id);
+        if(connection != null){
+            connection.sendCommand(new Command(CommandType.KICK));
+            this.removeUser(id);
+            connection.close();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean kickUser(String username) {
+        User user = getUserByUsername(username);
+        if(user != null) {
+            ClientConnection connection = Server.getInstance().getController().getClientConnection(user);
+            if(connection != null){
+                connection.sendCommand(new Command(CommandType.KICK));
+                this.removeUser(getUserByUsername(username).getID());
+                connection.close();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<User> getUsers() {
+        return new ArrayList<>(users.values());
+    }
 }

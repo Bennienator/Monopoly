@@ -1,11 +1,10 @@
 package de.seben.monopoly.server;
 
-import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
-import de.seben.monopoly.utils.CommandType;
 
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,44 +30,41 @@ public class ClientController {
         if(!running){
             Monopoly.debug("Starting...");
             running = true;
-            createNewClientConnection(Server.getInstance().getSocket());
+            for(int i = 0; i < 4; i++) {
+                createNewClientConnection(Server.getInstance().getSocket());
+            }
         }
         return this;
     }
 
     public void createNewClientConnection(ServerSocket server){
         if(clients.size() < 4){
-            for(int i = 0; i < 4; i++){
-                if(!clients.containsKey(i)){
-                    ClientConnection con = new ClientConnection(server, i);
-                    clients.put(i, con);
-                    con.start();
-                    return;
-                }
-            }
+            ClientConnection con = new ClientConnection(server);
+            clients.put(con.getID(), con);
+            con.start();
         }
     }
 
     public void preRegisterPlayer(ClientConnection connection){
-        int id = connection.getID();
-        User created = Server.getInstance().getEngine().addUser(id);
-        connection.setUser(created);
+        connection.setUser(Server.getInstance().getEngine().addUser(connection.getID()));
     }
 
     public void disconnect(ClientConnection connection){
-        for(int i : clients.keySet()){
-            if(clients.get(i).equals(connection)){
-                engine.removeUser(i);
-                clients.remove(i);
-                createNewClientConnection(Server.getInstance().getSocket());
-                return;
-            }
+        if(connection != null) {
+            Server.getInstance().getEngine().removeUser(connection.getID());
+            clients.remove(connection.getID());
+            createNewClientConnection(Server.getInstance().getSocket());
         }
+    }
+    public void disconnect(int id){
+        this.disconnect(clients.get(id));
+    }
+    public void disconnect(User user){
+        this.disconnect(user.getID());
     }
 
     public void sendCommand(Command command, User... recipients){
-        ArrayList<User> userList = new ArrayList<>(Arrays.asList(recipients));
-        for (User user : userList) {
+        for (User user : recipients) {
             clients.get(user.getID()).sendCommand(command);
         }
     }
@@ -81,6 +77,9 @@ public class ClientController {
 
     public ClientConnection getClientConnection(User user){
         return clients.get(user.getID());
+    }
+    public ClientConnection getClientConnection(int id){
+        return clients.get(id);
     }
 
     public boolean isUsernameExisting(String username){

@@ -21,20 +21,9 @@ public class CommandRecieveListener implements EventListener{
         Command command = event.getCommand();
         CommandType cmdType = command.getCmdType();
         ArrayList<String> args = command.getArgs();
-        Monopoly.debug("Command from " + sender.getName() == null ? "UnknownUser" : sender.getName() + " (" + sender.getID() + ")");
+        Monopoly.debug("Command from " + (sender.getName() == null ? "UnknownUser" : sender.getName()) + " (" + sender.getID() + ")");
         Monopoly.debug(" -> " + cmdType.name() + " " + String.join(" ", args));
         switch (cmdType){
-            case LOGIN:
-                String username = args.get(0);
-                if(Server.getInstance().getController().isUsernameExisting(username)){
-                    Monopoly.debug("Requested username already taken");
-                    Server.getInstance().getController().sendCommand(new Command(CommandType.REFUSE), sender);
-                }else{
-                    sender.setName(username);
-                    Monopoly.debug("Set name from Client " + sender.getID() + " to '" + username + "'");
-                    Server.getInstance().getController().sendCommand(new Command(CommandType.ACCEPT), sender);
-                }
-                break;
             case END_OF_ROUND: // args: null
                 Server.getInstance().getEngine().nextRound();
                 break;
@@ -59,8 +48,28 @@ public class CommandRecieveListener implements EventListener{
                 int id = Integer.valueOf(args.get(0));
                 String message = String.join(" ", args.subList(1, args.size() - 1));
                 break;
+            case LOGIN:
+                String username = args.get(0);
+                if(Server.getInstance().getController().isUsernameExisting(username)){
+                    Monopoly.debug("Requested username already taken");
+                    Server.getInstance().getController().sendCommand(new Command(CommandType.REFUSE), sender);
+                }else{
+                    sender.setName(username);
+                    Monopoly.debug("Set name from Client " + sender.getID() + " to '" + username + "'");
+                    Server.getInstance().getController().sendCommand(new Command(CommandType.ACCEPT), sender);
+                }
+                break;
             case DISCONNECT:
-                Server.getInstance().getEvents().executeEvent(new UserQuitEvent(Server.getInstance().getController().getClientConnection(sender)));
+                Server.getInstance().getEvents().executeEvent(new UserQuitEvent(Server.getInstance().getController().getClientConnection(sender), "Requested"));
+                break;
+            case INFO:
+                //INFO <Spieleranzahl> <Spieler als String>
+                ArrayList<User> users = Server.getInstance().getEngine().getUsers();
+                ArrayList<String> usernames = new ArrayList<>();
+                users.forEach((user -> usernames.add(user.getName())));
+                Server.getInstance().getController().sendCommand(new Command(CommandType.INFO, users.size() + "/4", String.join(", ", usernames)), sender);
+            default:
+                Monopoly.debug("Unknown Command");
         }
 
     }

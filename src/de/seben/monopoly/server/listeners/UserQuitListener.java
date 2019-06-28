@@ -12,7 +12,18 @@ public class UserQuitListener implements EventListener {
     @Event
     public void onQuit(UserQuitEvent event){
         User user = event.getUser();
-        Monopoly.debug(user.getName() + " (" + user.getID() + ") left");
+        String reason = event.getReason();
+        String newReason = "";
+        if(!reason.isEmpty()){
+            if(reason.equalsIgnoreCase("Socket closed")){
+                newReason = "Kicked";
+            }else{
+                newReason = reason;
+            }
+        }else{
+            newReason = "";
+        }
+        Monopoly.debug(user.getName() + " (" + user.getID() + ") quit: " + newReason);
         Server.getInstance().getController().disconnect(event.getConnection());
     }
 

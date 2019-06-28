@@ -1,16 +1,16 @@
 package de.seben.monopoly.events;
 
-import com.sun.org.apache.regexp.internal.recompile;
-
 import de.seben.monopoly.server.ClientConnection;
 import de.seben.monopoly.server.User;
 
 public class UserQuitEvent implements IEvent{
 
     private ClientConnection connection;
+    private String reason;
 
-    public UserQuitEvent(ClientConnection connection){
+    public UserQuitEvent(ClientConnection connection, String reason){
         this.connection = connection;
+        this.reason = reason;
     }
 
     public User getUser(){
@@ -18,6 +18,9 @@ public class UserQuitEvent implements IEvent{
     }
     public ClientConnection getConnection(){
         return this.connection;
+    }
+    public String getReason(){
+        return this.reason;
     }
 
 }

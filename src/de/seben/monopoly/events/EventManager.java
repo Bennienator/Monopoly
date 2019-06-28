@@ -34,7 +34,7 @@ public class EventManager {
             Monopoly.debug("Event " + event.getClass().getSimpleName() + " has no handlers.");
             return event;
         }
-        Monopoly.debug("Event " + event.getClass().getSimpleName() + " has " + handlers.size() + " handlers.");
+        Monopoly.debug("Event " + event.getClass().getSimpleName() + " was fired! Handler: " + handlers.iterator().next().getListener().getClass().getSimpleName());
         for (EventHandler handler : handlers) {
             // Basic support for multi-stage events. More can be added later by specifying exactly which priority to be executed - executeEventPre(event, lessThanPriority) for example
             if (i == PRE && handler.getPriority() >= 0)
@@ -51,24 +51,18 @@ public class EventManager {
     }
 
     public void registerListener(EventListener listener) {
-        Monopoly.debug("Trying to register new event listener: " + listener.getClass().getSimpleName());
 
         if (registeredListeners.contains(listener)) {
-            Monopoly.debug("Listener already registred: " + listener.getClass().getSimpleName());
             return;
         }
 
         Method[] methods = listener.getClass().getDeclaredMethods();
         this.registeredListeners.add(listener);
-        Monopoly.debug("Found " + methods.length + " methods in " + listener.getClass().getSimpleName());
         for (Method method : methods) {
-            Monopoly.debug("-> " + method.getName());
             Event annotation = method.getAnnotation(Event.class);
             if (annotation == null){
-                Monopoly.debug("annotation = null");
                 continue;
             }
-            Monopoly.debug(annotation.toString());
 
             Class<?>[] params = method.getParameterTypes();
             if (params.length != 1){
@@ -78,7 +72,6 @@ public class EventManager {
             Class<?> param = params[0];
 
             if (!method.getReturnType().equals(void.class)) {
-                Monopoly.debug("Ignoring method due to non-void return: " + method.getName());
                 continue;
             }
 
@@ -90,7 +83,7 @@ public class EventManager {
                     this.bindings.put(realParam, new TreeSet<EventHandler>());
                 }
                 Collection<EventHandler> eventHandlersForEvent = this.bindings.get(realParam);
-                Monopoly.debug("Successfully added listener method: " + method.getName() + " for event " + realParam.getSimpleName());
+                Monopoly.debug("Registered listener '" + method.getName() + "' for event '" + realParam.getSimpleName() + "'");
                 eventHandlersForEvent.add(createEventHandler(listener, method, annotation));
             }
         }

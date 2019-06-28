@@ -17,11 +17,10 @@ public class Command implements Serializable {
     }
 
     public String toString(){
-        String command = cmdType.getCommand();
-        for(String arg : args){
-            command += " " + arg;
-        }
-        return command;
+        StringBuilder builder = new StringBuilder();
+        builder.append(cmdType.getCommand());
+        args.forEach(builder::append);
+        return builder.toString();
     }
 
     public CommandType getCmdType(){ return cmdType; }

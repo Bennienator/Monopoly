@@ -1,6 +1,7 @@
 package de.seben.monopoly.client;
 
 import de.seben.monopoly.client.listeners.CommandRecieveListener;
+import de.seben.monopoly.client.listeners.ConsoleCommandListener;
 import de.seben.monopoly.events.EventManager;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
@@ -38,28 +39,34 @@ public class Client {
         if(!running){
             running = true;
             Monopoly.debug("Starting...");
+            ClientConsoleCommandHandler.getInstance().start();
             events = new EventManager();
             events.registerListener(new CommandRecieveListener());
+            events.registerListener(new ConsoleCommandListener());
             handler = new CommandHandler();
-            while(socket == null) {
+            tryConnect();
+        }
+    }
+
+    public void tryConnect(){
+        while(socket == null) {
+            try {
+                socket = new Socket("localhost", 7777);
+                Monopoly.debug("Connected to Server");
+                handler.start();
+            } catch (Exception e) {
+                if(e instanceof UnknownHostException){
+                    Monopoly.debug("Unknown Host");
+                }else if(e instanceof ConnectException){
+                    Monopoly.debug("Port closed");
+                }else if(e instanceof IOException){
+                    e.printStackTrace();
+                }
                 try {
-                    socket = new Socket("localhost", 7777);
-                    Monopoly.debug("Socket connected");
-                    handler.start();
-                } catch (Exception e) {
-                    if(e instanceof UnknownHostException){
-                        Monopoly.debug("Unknown Host");
-                    }else if(e instanceof ConnectException){
-                        Monopoly.debug("Port closed");
-                    }else if(e instanceof IOException){
-                        e.printStackTrace();
-                    }
-                    try {
-                        Monopoly.debug("Trying again (10s)");
-                        Thread.sleep(10000);
-                    }catch (InterruptedException ex){
-                        ex.printStackTrace();
-                    }
+                    Monopoly.debug("Trying again (10s)");
+                    Thread.sleep(10000);
+                }catch (InterruptedException ex){
+                    ex.printStackTrace();
                 }
             }
         }
@@ -111,6 +118,16 @@ public class Client {
     public void disconnect(){
         if(socket.isConnected()){
             try {
+                socket.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void sendDisconnect(){
+        if(socket.isConnected()){
+            try {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.writeObject(new Command(CommandType.DISCONNECT));
                 Monopoly.debug("Send Command: " + CommandType.DISCONNECT.name());
@@ -124,6 +141,13 @@ public class Client {
             }catch (IOException e){
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void resetConnection(){
+        if(socket.isClosed()){
+            handler = new CommandHandler();
+            tryConnect();
         }
     }
 

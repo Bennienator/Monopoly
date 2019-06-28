@@ -26,7 +26,7 @@ public class ClientCommandRecieveEvent implements IEvent{
         return this.args;
     }
     public String getArg(int index){
-        return this.args[index];
+        return this.args.get(index);
     }
 
 }
