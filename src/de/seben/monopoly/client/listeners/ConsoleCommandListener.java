@@ -22,14 +22,18 @@ public class ConsoleCommandListener implements EventListener {
         }else if(command.equalsIgnoreCase("info")){
             Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.INFO));
         }else if(command.equalsIgnoreCase("send")){
-            CommandType commandType = CommandType.valueOf(args.get(0));
-            String[] commandArgs = new String[args.size()-1];
-            if(commandType != null){
-                for(int i = 0; i < args.size()-1; i++){
-                    commandArgs[i] = args.get(i+1);
+            try{
+                CommandType commandType = CommandType.valueOf(args.get(0));
+                String[] commandArgs = new String[args.size()-1];
+                if(commandType != null){
+                    for(int i = 0; i < args.size()-1; i++){
+                        commandArgs[i] = args.get(i+1);
+                    }
+                    Client.getInstance().getHandler().sendCommandToServer(new Command(commandType, commandArgs));
+                    System.out.println("Sending: " + commandType.name() + " " + String.join(" ", commandArgs));
                 }
-                Client.getInstance().getHandler().sendCommandToServer(new Command(commandType, commandArgs));
-                System.out.println("Sending: " + commandType.name() + " " + String.join(" ", commandArgs));
+            }catch(IllegalArgumentException e){
+                System.out.println("This is not a kind of message: " + args.get(0));
             }
         }
     }

@@ -25,7 +25,15 @@ public class CommandHandler extends Thread{
 
     public void run(){ // Commands vom Server werden bearbeitet
         Monopoly.debug("Ready...");
-        String username = JOptionPane.showInputDialog(null, "Bitte gebe deinen Benutzernamen ein.", "Monopoly - Login", JOptionPane.QUESTION_MESSAGE);
+        String username = "";
+        try{
+            username = JOptionPane.showInputDialog(null, "Bitte gebe deinen Benutzernamen ein.", "Monopoly - Login", JOptionPane.QUESTION_MESSAGE);
+        }catch(Exception e){
+            if(username == null || username.isEmpty()){
+                username = "guest" + (int) (Math.random()*100);
+            }
+        }
+        
         Monopoly.debug("Logging in as '" + username + "'");
         sendCommandToServer(new Command(CommandType.LOGIN, username));
         try {
