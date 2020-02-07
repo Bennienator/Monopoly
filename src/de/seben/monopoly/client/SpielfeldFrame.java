@@ -16,17 +16,17 @@ public class SpielfeldFrame extends JFrame implements FrameDelegate {
     private JTextField serverTextField, portTextField, messageTextField;
     private JButton connectButton;
 
-    private int[] X, Y; //KOS-Punkte
-    private int W1; //Breite eines Grundstück-Feldes
-    private int H1; //Höhe eines Grundstück-Feldes
-    private int width; //Breite von Fenster
-    private int height; //Höhe von Fenster
+    private int[] X, Y;     //KOS-Punkte
+    private int W1;         //Breite eines Grundstück-Feldes
+    private int H1;         //Höhe eines Grundstück-Feldes
+    private int width;      //Breite von Fenster
+    private int height;     //Höhe von Fenster
 
-    private User actUser; //Person, welche dieses Programm benutzt
-    private User[] users; //alle Spieler
-    private Plot[] plots; //alle Grundstücke, Aktionsfelder etc.
+    private User actUser;   //Person, welche dieses Programm benutzt
+    private User[] users;   //alle Spieler
+    private Plot[] plots;   //alle Grundstücke, Aktionsfelder etc.
 
-    private JLabel[][] placesForMeeples; //Stellen für die Spielfiguren
+    private JLabel[][] placesForMeeples;    //Stellen für die Spielfiguren
 
 
     private SpielfeldFrame(User[] users) { //Konstruktor

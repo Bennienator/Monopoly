@@ -20,8 +20,12 @@ public class ConsoleCommandEvent implements IEvent{
     public ArrayList<String> getArgs(){
         return this.args;
     }
-    public String getArg(int index){
-        return this.args.get(index);
+    public String getArg(int index) {
+        if (args.size() > index) {
+            return this.args.get(index);
+        }else{
+            return "null";
+        }
     }
 
 }

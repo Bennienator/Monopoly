@@ -1,6 +1,6 @@
 package de.seben.monopoly.client;
 
-import de.seben.monopoly.client.listeners.CommandRecieveListener;
+import de.seben.monopoly.client.listeners.CommandReceiveListener;
 import de.seben.monopoly.client.listeners.ConsoleCommandListener;
 import de.seben.monopoly.events.EventManager;
 import de.seben.monopoly.main.Monopoly;
@@ -27,6 +27,9 @@ public class Client {
     private CommandHandler handler;
     private EventManager events;
 
+    private String hostname = "localhost";
+    private int port = 7777;
+
     private String username;
 
     private boolean running;
@@ -41,33 +44,25 @@ public class Client {
             Monopoly.debug("Starting...");
             ClientConsoleCommandHandler.getInstance().start();
             events = new EventManager();
-            events.registerListener(new CommandRecieveListener());
+            events.registerListener(new CommandReceiveListener());
             events.registerListener(new ConsoleCommandListener());
             handler = new CommandHandler();
-            tryConnect();
+            connect();
         }
     }
 
-    public void tryConnect(){
-        while(socket == null) {
-            try {
-                socket = new Socket("localhost", 7777);
-                Monopoly.debug("Connected to Server");
-                handler.start();
-            } catch (Exception e) {
-                if(e instanceof UnknownHostException){
-                    Monopoly.debug("Unknown Host");
-                }else if(e instanceof ConnectException){
-                    Monopoly.debug("Port closed");
-                }else if(e instanceof IOException){
-                    e.printStackTrace();
-                }
-                try {
-                    Monopoly.debug("Trying again (10s)");
-                    Thread.sleep(10000);
-                }catch (InterruptedException ex){
-                    ex.printStackTrace();
-                }
+    public void connect(){
+        try {
+            socket = new Socket(hostname, port);
+            Monopoly.debug("Connected to Server");
+            handler.start();
+        } catch (IOException e) {
+            if (e instanceof UnknownHostException) {
+                Monopoly.debug("Unknown Host");
+            } else if (e instanceof ConnectException) {
+                Monopoly.debug("Port closed");
+            } else {
+                e.printStackTrace();
             }
         }
     }
@@ -147,7 +142,7 @@ public class Client {
     public void resetConnection(){
         if(socket.isClosed()){
             handler = new CommandHandler();
-            tryConnect();
+            connect();
         }
     }
 

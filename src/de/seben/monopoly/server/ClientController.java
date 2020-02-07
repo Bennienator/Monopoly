@@ -51,6 +51,7 @@ public class ClientController {
 
     public void disconnect(ClientConnection connection){
         if(connection != null) {
+            connection.close();
             Server.getInstance().getEngine().removeUser(connection.getID());
             clients.remove(connection.getID());
             createNewClientConnection(Server.getInstance().getSocket());

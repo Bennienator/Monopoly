@@ -7,11 +7,11 @@ public class User {
     //TODO: Wie kann das Programm ein Icon einfügen?
     //Muss das ein Icon sein oder kann das auch ein Image sein?
 
-    private int id;      //ID des Spielers (eindeutige Identifikation)
-    private String name; //Name des Spielers
-    private int balance; //Guthaben des Spielers
-    private int actPos; //aktuelle Position des Spielers auf dem Spielbrett (= ID des Grundstücks)
-    private Image meeple; //Spielfigur des Spielers
+    private int id;         //ID des Spielers (eindeutige Identifikation)
+    private String name;    //Name des Spielers
+    private int balance;    //Guthaben des Spielers
+    private int actPos;     //aktuelle Position des Spielers auf dem Spielbrett (= ID des Grundstücks)
+    private Image meeple;   //Spielfigur des Spielers
 
     public User(){
         this.meeple = Toolkit.getDefaultToolkit().getImage("");

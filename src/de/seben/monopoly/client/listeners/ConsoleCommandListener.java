@@ -23,18 +23,22 @@ public class ConsoleCommandListener implements EventListener {
             Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.INFO));
         }else if(command.equalsIgnoreCase("send")){
             try{
+                if(args.size() == 0)
+                    throw new IllegalArgumentException();
                 CommandType commandType = CommandType.valueOf(args.get(0));
                 String[] commandArgs = new String[args.size()-1];
-                if(commandType != null){
-                    for(int i = 0; i < args.size()-1; i++){
-                        commandArgs[i] = args.get(i+1);
-                    }
-                    Client.getInstance().getHandler().sendCommandToServer(new Command(commandType, commandArgs));
-                    System.out.println("Sending: " + commandType.name() + " " + String.join(" ", commandArgs));
+                for(int i = 0; i < args.size()-1; i++){
+                    commandArgs[i] = args.get(i+1);
                 }
+                Client.getInstance().getHandler().sendCommandToServer(new Command(commandType, commandArgs));
             }catch(IllegalArgumentException e){
-                System.out.println("This is not a kind of message: " + args.get(0));
+                System.out.println("Command '" + command + "': Invalid parameters");
             }
+        }else if(command.equalsIgnoreCase("quit") || command.equalsIgnoreCase("leave") || command.equalsIgnoreCase("stop")){
+            Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.DISCONNECT));
+            System.exit(1);
+        }else{
+            System.out.println("Command '" + event.getCommand() + "' not found.");
         }
     }
 

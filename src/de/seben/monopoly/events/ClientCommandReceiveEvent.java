@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import de.seben.monopoly.utils.Command;
 
-public class ClientCommandRecieveEvent implements IEvent{
+public class ClientCommandReceiveEvent implements IEvent{
 
     private Command command;
     private Command lastCommand;
     private ArrayList<String> args;
 
-    public ClientCommandRecieveEvent(Command command, Command lastCommand){
+    public ClientCommandReceiveEvent(Command command, Command lastCommand){
         this.command = command;
         this.lastCommand = lastCommand;
         this.args = command.getArgs();

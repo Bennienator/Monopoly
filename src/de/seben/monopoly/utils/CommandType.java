@@ -4,8 +4,11 @@ import java.io.Serializable;
 
 public enum CommandType implements Serializable {
 
+    //GAME
     END_OF_ROUND("EOR"),
     START_ROUND("SR"),
+
+    //PLAYER
     MOVE_PLAYER("MP"),
     CLAIM_PLOT("CP"),
     BUILD_HOUSE("BH"),
@@ -14,16 +17,20 @@ public enum CommandType implements Serializable {
     PAY("PAY"),
     EARN("EARN"),
     SET_MONEY("SM"),
+
+    //COMMUNICATION
     MESSAGE("MSG"),
+    CHAT("CHAT"),
+    INFO("INFO"),
+
+    //SYSTEM
     CONNECT("CC"),
     ACCEPT("ACPT"),
     DISCONNECT("DC"),
     REFUSE("RFS"),
-    CHAT("CHAT"),
     LOGIN("LOGIN"),
     READY("RDY"),
-    KICK("KICK"),
-    INFO("INFO");
+    KICK("KICK");
 
     private String command;
 

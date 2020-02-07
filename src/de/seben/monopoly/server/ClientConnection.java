@@ -50,7 +50,9 @@ public class ClientConnection extends Thread{
                     }
             }
         }catch (SocketException e){
-            Server.getInstance().getEvents().executeEvent(new UserQuitEvent(this, e.getMessage()));
+            if(!e.getMessage().equalsIgnoreCase("Socket closed")){
+                Server.getInstance().getEvents().executeEvent(new UserQuitEvent(this, e.getMessage()));
+            }
         }catch (IOException | ClassNotFoundException e){
             e.printStackTrace();
         }
@@ -65,7 +67,7 @@ public class ClientConnection extends Thread{
                 this.lastSendCommand = output;
                 Monopoly.debug("Sending: " + output.getCmdType().name() + " " + String.join(" ", output.getArgs()));
             } catch (SocketException e){
-                Server.getInstance().getEvents().executeEvent(new UserQuitEvent(this, "Connection lost"));
+                Server.getInstance().getEvents().executeEvent(new UserQuitEvent(this, e.getMessage()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -84,7 +86,8 @@ public class ClientConnection extends Thread{
 
     public void close() {
         try{
-            socket.close();
+            if(socket != null && !socket.isClosed())
+                socket.close();
         }catch (IOException e){
             e.printStackTrace();
         }

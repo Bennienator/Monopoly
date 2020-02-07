@@ -13,10 +13,10 @@ import java.util.ArrayList;
 
 import de.seben.monopoly.events.Event;
 
-public class CommandRecieveListener implements EventListener{
+public class CommandReceiveListener implements EventListener{
 
     @Event
-    public void onCommandRecieve(ServerCommandRecieveEvent event){
+    public void onCommandReceive(ServerCommandRecieveEvent event){
         User sender = event.getCommandSender();
         Command command = event.getCommand();
         CommandType cmdType = command.getCmdType();
@@ -28,25 +28,28 @@ public class CommandRecieveListener implements EventListener{
                 Server.getInstance().getEngine().nextRound();
                 break;
             case CLAIM_PLOT: // args: PlayerID, plotID
-                int userID = Integer.valueOf(args.get(0));
-                int plotID = Integer.valueOf(args.get(1));
+                int userID = Integer.parseInt(args.get(0));
+                int plotID = Integer.parseInt(args.get(1));
                 break;
             case BUILD_HOUSE: // args: plotID
-                Server.getInstance().getEngine().changeAmountHouses(Integer.valueOf(args.get(1)), 1);
+                Server.getInstance().getEngine().changeAmountHouses(Integer.parseInt(args.get(1)), 1);
                 break;
             case REMOVE_HOUSE: // args: plotID
-                Server.getInstance().getEngine().changeAmountHouses(Integer.valueOf(args.get(0)), -1);
+                Server.getInstance().getEngine().changeAmountHouses(Integer.parseInt(args.get(0)), -1);
                 break;
             case PAY: // args: PlayerID, Höhe des Betrages, Name des Zielspielers
-                Server.getInstance().getEngine().changeBalance(Integer.valueOf(args.get(0)), -1 * Integer.valueOf(args.get(1)));
-                Server.getInstance().getEngine().changeBalance(Integer.valueOf(args.get(2)), Integer.valueOf(args.get(1)));
+                Server.getInstance().getEngine().changeBalance(Integer.parseInt(args.get(0)), -1 * Integer.parseInt(args.get(1)));
+                Server.getInstance().getEngine().changeBalance(Integer.parseInt(args.get(2)), Integer.parseInt(args.get(1)));
                 break;
             case EARN: // args: PlayerID, Höhe des Betrages
-                Server.getInstance().getEngine().changeBalance(Integer.valueOf(args.get(0)), Integer.valueOf(args.get(1)));
+                Server.getInstance().getEngine().changeBalance(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
                 break;
             case CHAT: // args: PlayerID, Nachricht
-                int id = Integer.valueOf(args.get(0));
+                int id = Integer.parseInt(args.get(0));
                 String message = String.join(" ", args.subList(1, args.size() - 1));
+                break;
+            case MESSAGE:
+                //MESSAGE <message>
                 break;
             case LOGIN:
                 String username = args.get(0);
@@ -68,6 +71,7 @@ public class CommandRecieveListener implements EventListener{
                 ArrayList<String> usernames = new ArrayList<>();
                 users.forEach((user -> usernames.add(user.getName())));
                 Server.getInstance().getController().sendCommand(new Command(CommandType.INFO, users.size() + "/4", String.join(", ", usernames)), sender);
+                break;
             default:
                 Monopoly.debug("Unknown Command");
         }

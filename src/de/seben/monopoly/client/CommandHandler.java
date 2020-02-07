@@ -1,8 +1,7 @@
 package de.seben.monopoly.client;
 
-import de.seben.monopoly.events.ClientCommandRecieveEvent;
+import de.seben.monopoly.events.ClientCommandReceiveEvent;
 import de.seben.monopoly.main.Monopoly;
-import de.seben.monopoly.server.Server;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
@@ -25,13 +24,12 @@ public class CommandHandler extends Thread{
 
     public void run(){ // Commands vom Server werden bearbeitet
         Monopoly.debug("Ready...");
-        String username = "";
+        String username;
+        
         try{
             username = JOptionPane.showInputDialog(null, "Bitte gebe deinen Benutzernamen ein.", "Monopoly - Login", JOptionPane.QUESTION_MESSAGE);
         }catch(Exception e){
-            if(username == null || username.isEmpty()){
-                username = "guest" + (int) (Math.random()*100);
-            }
+            username = "guest" + (int) (Math.random()*100);
         }
         
         Monopoly.debug("Logging in as '" + username + "'");
@@ -42,7 +40,7 @@ public class CommandHandler extends Thread{
                 Object in;
                 if ((in = ois.readObject()) != null) {
                     Command input = (Command) in;
-                    Client.getInstance().getEvents().executeEvent(new ClientCommandRecieveEvent(input, lastSendCommand));
+                    Client.getInstance().getEvents().executeEvent(new ClientCommandReceiveEvent(input, lastSendCommand));
                 }
             }
         }catch (EOFException e){
@@ -57,7 +55,8 @@ public class CommandHandler extends Thread{
         } catch (IOException | ClassNotFoundException | NullPointerException e){
             e.printStackTrace();
         }
-        Monopoly.debug("Connection lost");
+        System.out.println("Lost connection to Server");
+        System.out.println("Stopping...");
         System.exit(404);
     }
 

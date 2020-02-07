@@ -1,5 +1,6 @@
 package de.seben.monopoly.server;
 
+import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.utils.Command;
@@ -105,25 +106,28 @@ public class ServerEngine {
 
     public boolean kickUser(int id) {
         ClientConnection connection = Server.getInstance().getController().getClientConnection(id);
-        if(connection != null){
-            connection.sendCommand(new Command(CommandType.KICK));
-            this.removeUser(id);
-            connection.close();
-            return true;
-        }
-        return false;
+        return kickUser(connection);
     }
 
     public boolean kickUser(String username) {
         User user = getUserByUsername(username);
         if(user != null) {
             ClientConnection connection = Server.getInstance().getController().getClientConnection(user);
-            if(connection != null){
-                connection.sendCommand(new Command(CommandType.KICK));
-                this.removeUser(getUserByUsername(username).getID());
-                connection.close();
-                return true;
-            }
+            return kickUser(connection);
+        }
+        return false;
+    }
+    public boolean kickUser(User user){
+        ClientConnection connection = Server.getInstance().getController().getClientConnection(user);
+        return kickUser(connection);
+    }
+
+    public boolean kickUser(ClientConnection connection){
+        if(connection != null){
+            connection.sendCommand(new Command(CommandType.KICK));
+            connection.close();
+            Server.getInstance().getEvents().executeEvent(new UserQuitEvent(connection, "Kicked"));
+            return true;
         }
         return false;
     }
