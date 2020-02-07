@@ -4,7 +4,6 @@ import de.seben.monopoly.client.Client;
 import de.seben.monopoly.events.ConsoleCommandEvent;
 import de.seben.monopoly.events.Event;
 import de.seben.monopoly.events.EventListener;
-import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
