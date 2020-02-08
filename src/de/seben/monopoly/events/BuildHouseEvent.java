@@ -1,7 +1,7 @@
 package de.seben.monopoly.events;
 
 import de.seben.monopoly.plot.Plot;
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 
 public class BuildHouseEvent implements IEvent {
 

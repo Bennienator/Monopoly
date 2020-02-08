@@ -1,4 +1,4 @@
-package de.seben.monopoly.server;
+package de.seben.monopoly.utils;
 
 import java.awt.*;
 

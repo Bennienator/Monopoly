@@ -17,9 +17,6 @@ public class ConsoleCommandListener implements EventListener {
         ArrayList<String> args = event.getArgs();
         if(command.equalsIgnoreCase("help")){
             System.out.println("------ HILFE ------");
-            System.out.println("/info [Username/ID]");
-        }else if(command.equalsIgnoreCase("info")){
-            Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.INFO));
         }else if(command.equalsIgnoreCase("send")){
             try{
                 if(args.size() == 0)

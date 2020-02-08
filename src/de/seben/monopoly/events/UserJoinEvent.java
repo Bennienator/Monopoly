@@ -1,6 +1,6 @@
 package de.seben.monopoly.events;
 
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 
 public class UserJoinEvent implements IEvent{
 

@@ -2,12 +2,13 @@ package de.seben.monopoly.server;
 
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
+import de.seben.monopoly.utils.CommandType;
+import de.seben.monopoly.utils.User;
 
 import java.net.ServerSocket;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ClientController {
 
@@ -92,4 +93,16 @@ public class ClientController {
         return false;
     }
 
+    public void broadcastUserList() {
+        ArrayList<User> users = Server.getInstance().getEngine().getUsers();
+        String[] userStr = new String[users.size()*2];
+        int i = 0;
+        for(User user : users){
+            userStr[i] = String.valueOf(user.getID());
+            i++;
+            userStr[i] = user.getName();
+            i++;
+        }
+        broadcastCommand(new Command(CommandType.PLAYERLIST, userStr));
+    }
 }

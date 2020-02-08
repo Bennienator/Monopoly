@@ -19,12 +19,12 @@ public enum CommandType implements Serializable {
     SET_MONEY("SM"),
 
     //COMMUNICATION
-    MESSAGE("MSG"),
     CHAT("CHAT"),
-    INFO("INFO"),
+    PRIVATE_CHAT("PCHAT"),
 
     //SYSTEM
-    CONNECT("CC"),
+    BROADCAST("BRDCAST"),
+    PLAYERLIST("PLIST"),
     ACCEPT("ACPT"),
     DISCONNECT("DC"),
     REFUSE("RFS"),
@@ -32,7 +32,7 @@ public enum CommandType implements Serializable {
     READY("RDY"),
     KICK("KICK");
 
-    private String command;
+	private String command;
 
     CommandType(String command){
         this.command = command;

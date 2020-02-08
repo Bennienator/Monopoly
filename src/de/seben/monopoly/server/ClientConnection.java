@@ -4,9 +4,8 @@ import de.seben.monopoly.events.ServerCommandRecieveEvent;
 import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
-import de.seben.monopoly.utils.CommandType;
+import de.seben.monopoly.utils.User;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -27,9 +26,9 @@ public class ClientConnection extends Thread{
     private static int amount;
 
     public ClientConnection(ServerSocket server){
-        Monopoly.debug("Created instance");
-        this.server = server;
         this.id = amount++;
+        Monopoly.debug("(" + id + ") Created instance");
+        this.server = server;
         this.controller = ClientController.getInstance();
     }
 
@@ -65,7 +64,7 @@ public class ClientConnection extends Thread{
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.writeObject(output);
                 this.lastSendCommand = output;
-                Monopoly.debug("Sending: " + output.getCmdType().name() + " " + String.join(" ", output.getArgs()));
+                Monopoly.debug("(" + id + ") Sending: " + output.getCmdType().name() + " " + String.join(" ", output.getArgs()));
             } catch (SocketException e){
                 Server.getInstance().getEvents().executeEvent(new UserQuitEvent(this, e.getMessage()));
             } catch (IOException e) {

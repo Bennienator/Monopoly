@@ -5,7 +5,7 @@ import de.seben.monopoly.events.ServerCommandRecieveEvent;
 import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.server.Server;
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
@@ -23,33 +23,62 @@ public class CommandReceiveListener implements EventListener{
         ArrayList<String> args = command.getArgs();
         Monopoly.debug("Command from " + (sender.getName() == null ? "UnknownUser" : sender.getName()) + " (" + sender.getID() + ")");
         Monopoly.debug(" -> " + cmdType.name() + " " + String.join(" ", args));
+
+        String message;
+        int plotID;
+        int amount;
+        
         switch (cmdType){
             case END_OF_ROUND: // args: null
                 Server.getInstance().getEngine().nextRound();
                 break;
-            case CLAIM_PLOT: // args: PlayerID, plotID
-                int userID = Integer.parseInt(args.get(0));
-                int plotID = Integer.parseInt(args.get(1));
+            case CLAIM_PLOT: // args: plotID
+                plotID = Integer.parseInt(args.get(0));
                 break;
             case BUILD_HOUSE: // args: plotID
-                Server.getInstance().getEngine().changeAmountHouses(Integer.parseInt(args.get(1)), 1);
+                plotID = Integer.parseInt(args.get(0));
+                Server.getInstance().getEngine().changeAmountHouses(plotID, 1);
                 break;
             case REMOVE_HOUSE: // args: plotID
-                Server.getInstance().getEngine().changeAmountHouses(Integer.parseInt(args.get(0)), -1);
+                plotID = Integer.parseInt(args.get(0));
+                Server.getInstance().getEngine().changeAmountHouses(plotID, -1);
                 break;
-            case PAY: // args: PlayerID, Höhe des Betrages, Name des Zielspielers
-                Server.getInstance().getEngine().changeBalance(Integer.parseInt(args.get(0)), -1 * Integer.parseInt(args.get(1)));
-                Server.getInstance().getEngine().changeBalance(Integer.parseInt(args.get(2)), Integer.parseInt(args.get(1)));
+            case PAY: // args: amount, receiverID
+                try {
+                    amount = Integer.parseInt(args.get(0));
+                    try{
+                        int receiverID = Integer.parseInt(args.get(1));
+                        User receiver = Server.getInstance().getEngine().getUserByID(receiverID);
+                        if(receiver != null) {
+                            Server.getInstance().getEngine().changeBalance(sender, -1 * amount);
+                            Server.getInstance().getEngine().changeBalance(receiver, amount);
+                        }
+                    }catch (NumberFormatException e){
+                        Monopoly.debug("Wrong receiverID");
+                    }
+                }catch (NumberFormatException e) {
+                    Monopoly.debug("Wrong amount");
+                }
                 break;
-            case EARN: // args: PlayerID, Höhe des Betrages
-                Server.getInstance().getEngine().changeBalance(Integer.parseInt(args.get(0)), Integer.parseInt(args.get(1)));
+            case EARN: // args: userID, amount
+                try {
+                    amount = Integer.parseInt(args.get(0));
+                    Server.getInstance().getEngine().changeBalance(sender, amount);
+                }catch (NumberFormatException e){
+                    Monopoly.debug("Wrong amount");
+                }
                 break;
-            case CHAT: // args: PlayerID, Nachricht
-                int id = Integer.parseInt(args.get(0));
-                String message = String.join(" ", args.subList(1, args.size() - 1));
+            case CHAT: // args: message
+                message = String.join(" ", args);
+                Server.getInstance().getEngine().userChat(sender, message);
                 break;
-            case MESSAGE:
-                //MESSAGE <message>
+            case PRIVATE_CHAT: // args: userID, message
+                try {
+                    int userID = Integer.parseInt(args.get(0));
+                    message = String.join(" ", args.subList(1, args.size()-1));
+                }catch (NumberFormatException e){
+                    Monopoly.debug("userID not a number");
+                }
                 break;
             case LOGIN:
                 String username = args.get(0);
@@ -60,17 +89,11 @@ public class CommandReceiveListener implements EventListener{
                     sender.setName(username);
                     Monopoly.debug("Set name from Client " + sender.getID() + " to '" + username + "'");
                     Server.getInstance().getController().sendCommand(new Command(CommandType.ACCEPT), sender);
+                    Server.getInstance().getController().broadcastUserList();
                 }
                 break;
             case DISCONNECT:
                 Server.getInstance().getEvents().executeEvent(new UserQuitEvent(Server.getInstance().getController().getClientConnection(sender), "Requested"));
-                break;
-            case INFO:
-                //INFO <Spieleranzahl> <Spieler als String>
-                ArrayList<User> users = Server.getInstance().getEngine().getUsers();
-                ArrayList<String> usernames = new ArrayList<>();
-                users.forEach((user -> usernames.add(user.getName())));
-                Server.getInstance().getController().sendCommand(new Command(CommandType.INFO, users.size() + "/4", String.join(", ", usernames)), sender);
                 break;
             default:
                 Monopoly.debug("Unknown Command");

@@ -1,5 +1,8 @@
 package de.seben.monopoly.client;
 
+import de.seben.monopoly.client.frames.ChatFrame;
+import de.seben.monopoly.client.frames.ConnectFrame;
+import de.seben.monopoly.client.frames.PitchFrame;
 import de.seben.monopoly.client.listeners.CommandReceiveListener;
 import de.seben.monopoly.client.listeners.ConsoleCommandListener;
 import de.seben.monopoly.events.EventManager;
@@ -23,9 +26,12 @@ public class Client {
     }
 
     private Socket socket;
-    private SpielfeldFrame frame;
+    private PitchFrame pitchFrame;
+    private ChatFrame chatFrame;
+    private ConnectFrame connectFrame;
     private CommandHandler handler;
     private EventManager events;
+    private PlayerController players;
 
     private String hostname = "localhost";
     private int port = 7777;
@@ -46,6 +52,7 @@ public class Client {
             events = new EventManager();
             events.registerListener(new CommandReceiveListener());
             events.registerListener(new ConsoleCommandListener());
+            players = PlayerController.getInstance();
             handler = new CommandHandler();
             connect();
         }
@@ -59,16 +66,19 @@ public class Client {
         } catch (IOException e) {
             if (e instanceof UnknownHostException) {
                 Monopoly.debug("Unknown Host");
+                System.exit(400);
             } else if (e instanceof ConnectException) {
                 Monopoly.debug("Port closed");
+                System.exit(401);
             } else {
                 e.printStackTrace();
+                System.exit(402);
             }
         }
     }
 
-    public void addChatMessage(String message){
-        frame.addChatMessage(message);
+    public void addChatMessage(String sender, String message){
+        chatFrame.addChatMessage(sender, message);
     }
 
     public void movePlayer(String name, int plotID){
@@ -101,6 +111,19 @@ public class Client {
     }
     public EventManager getEvents(){
         return this.events;
+    }
+    public PlayerController getPlayers() {
+        return this.players;
+    }
+
+    public ConnectFrame getConnectFrame() {
+        return this.connectFrame;
+    }
+    public ChatFrame getChatFrame() {
+        return this.chatFrame;
+    }
+    public PitchFrame getPitchFrame() {
+        return this.pitchFrame;
     }
 
     public void setUsername(String username){
@@ -146,4 +169,8 @@ public class Client {
         }
     }
 
+    public void loggedIn() {
+        connectFrame = new ConnectFrame();
+        chatFrame = new ChatFrame();
+    }
 }

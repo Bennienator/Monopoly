@@ -50,12 +50,11 @@ public class CommandHandler extends Thread{
                 ex.printStackTrace();
             }
         } catch(SocketException e){
-            Monopoly.debug("Lost connection to Server: " + e.getMessage());
+            System.out.println("Lost connection to Server: " + e.getMessage());
             Client.getInstance().disconnect();
         } catch (IOException | ClassNotFoundException | NullPointerException e){
             e.printStackTrace();
         }
-        System.out.println("Lost connection to Server");
         System.out.println("Stopping...");
         System.exit(404);
     }

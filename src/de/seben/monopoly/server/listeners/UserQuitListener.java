@@ -5,7 +5,7 @@ import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.events.Event;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.server.Server;
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 
 public class UserQuitListener implements EventListener {
 
@@ -15,6 +15,7 @@ public class UserQuitListener implements EventListener {
         String reason = event.getReason();
         Monopoly.debug(user.getName() + " (" + user.getID() + ") quit: " + reason);
         Server.getInstance().getController().disconnect(event.getConnection());
+        Server.getInstance().getController().broadcastUserList();
     }
 
 }

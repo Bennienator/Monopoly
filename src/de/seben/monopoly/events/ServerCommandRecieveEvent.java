@@ -2,7 +2,7 @@ package de.seben.monopoly.events;
 
 import java.util.ArrayList;
 
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 import de.seben.monopoly.utils.Command;
 
 public class ServerCommandRecieveEvent implements IEvent{

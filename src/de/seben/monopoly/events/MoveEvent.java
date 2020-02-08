@@ -2,7 +2,7 @@ package de.seben.monopoly.events;
 
 import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.plot.PlotAction;
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 
 public class MoveEvent implements IEvent {
 

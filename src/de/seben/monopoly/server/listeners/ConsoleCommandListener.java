@@ -3,10 +3,9 @@ package de.seben.monopoly.server.listeners;
 import de.seben.monopoly.events.ConsoleCommandEvent;
 import de.seben.monopoly.events.Event;
 import de.seben.monopoly.events.EventListener;
-import de.seben.monopoly.server.ClientController;
 import de.seben.monopoly.server.Server;
 import de.seben.monopoly.server.ServerEngine;
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 
 import java.util.ArrayList;
 

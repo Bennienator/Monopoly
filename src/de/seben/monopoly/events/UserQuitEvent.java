@@ -1,7 +1,7 @@
 package de.seben.monopoly.events;
 
 import de.seben.monopoly.server.ClientConnection;
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 
 public class UserQuitEvent implements IEvent{
 

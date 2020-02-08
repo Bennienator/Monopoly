@@ -5,9 +5,9 @@ import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
+import de.seben.monopoly.utils.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -52,27 +52,28 @@ public class ServerEngine {
 
     public void nextRound(){
         actUser = (actUser + 1) % users.size();
-        User user = users.get(actUser);
-        Server.getInstance().getController().broadcastCommand(new Command(CommandType.MESSAGE, user.getName() + " ist nun an der Reihe."));
-        int cubeOne = 0, cubeTwo = 0;
-        for (int cubed = 1; cubeOne == cubeTwo; cubed++){
-            Random random = new Random();
-            cubeOne = 1 + random.nextInt(6);
-            cubeTwo = 1 + random.nextInt(6);
-            if (cubed == 3 && cubeOne == cubeTwo){
-                intoPrison(actUser);
-                Server.getInstance().getController().broadcastCommand(new Command(CommandType.MESSAGE, "Weil " + user.getName() + " 3 Päsche hintereinander gewürfelt hat, muss er nun in das Gefängnis."));
-                nextRound();
-                return;
+        User user = getUserByID(actUser);
+        if(user != null) {
+            Server.getInstance().getController().broadcastCommand(new Command(CommandType.BROADCAST, user.getName() + " ist nun an der Reihe."));
+            int cubeOne = 0, cubeTwo = 0;
+            for (int diced = 1; cubeOne == cubeTwo; diced++) {
+                Random random = new Random();
+                cubeOne = 1 + random.nextInt(6);
+                cubeTwo = 1 + random.nextInt(6);
+                if (diced == 3 && cubeOne == cubeTwo) {
+                    intoPrison(user);
+                    Server.getInstance().getController().broadcastCommand(new Command(CommandType.BROADCAST, "Weil " + user.getName() + " 3 Päsche hintereinander gewürfelt hat, muss er nun in das Gefängnis."));
+                    nextRound();
+                    return;
+                }
+                int moves = cubeOne + cubeTwo;
+                plots[user.getPosition()].removeVisitor(user);
+                int newPos = user.move(moves);
+                plots[newPos].addVisitor(user);
+                Server.getInstance().getController().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(actUser), String.valueOf(newPos)));
+                plots[newPos].activateEffect(user);
             }
-            int moves = cubeOne + cubeTwo;
-            plots[user.getPosition()].removeVisitor(user);
-            int newPos = user.move(moves);
-            plots[newPos].addVisitor(user);
-            Server.getInstance().getController().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(actUser), String.valueOf(newPos)));
-            plots[newPos].activateEffect(user);
         }
-
     }
 
     public User getUserByUsername(String username){
@@ -83,29 +84,35 @@ public class ServerEngine {
         return null;
     }
     public User getUserByID(int id) {
-        return users.get(id);
+        if(users.containsKey(id)) {
+            return users.get(id);
+        }
+        Monopoly.debug("No user found with id '" + id + "'");
+        return null;
     }
 
     public void changeAmountHouses(int plotID, int amount){
         plots[plotID].changeAmountHouse(amount);
     }
 
-    public void changeBalance(int userID, int amount){
-        User user = users.get(userID);
+    public void changeBalance(User user, int amount){
+        if(!userExists(user)) return;
+
         CommandType outputType = user.changeBalance(amount) ? CommandType.ACCEPT : CommandType.REFUSE;
         Server.getInstance().getController().sendCommand(new Command(outputType), user);
     }
 
-    public void intoPrison(int userID){
-        User user = users.get(userID);
+    public void intoPrison(User user){
+        if(!userExists(user)) return;
+
         plots[user.getPosition()].removeVisitor(user);
         user.setPosition(40);
         plots[40].addVisitor(user);
-        Server.getInstance().getController().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(userID), String.valueOf(40)));
+        Server.getInstance().getController().broadcastCommand(new Command(CommandType.MOVE_PLAYER, String.valueOf(user.getID()), String.valueOf(40)));
     }
 
-    public boolean kickUser(int id) {
-        ClientConnection connection = Server.getInstance().getController().getClientConnection(id);
+    public boolean kickUser(int userID) {
+        ClientConnection connection = Server.getInstance().getController().getClientConnection(userID);
         return kickUser(connection);
     }
 
@@ -132,7 +139,20 @@ public class ServerEngine {
         return false;
     }
 
+    private boolean userExists(User user){
+        if(users.containsValue(user)){
+            return true;
+        }else{
+            Monopoly.debug("User not found");
+            return false;
+        }
+    }
+
     public ArrayList<User> getUsers() {
         return new ArrayList<>(users.values());
+    }
+
+    public void userChat(User sender, String message) {
+        Server.getInstance().getController().broadcastCommand(new Command(CommandType.CHAT, sender.getName(), message));
     }
 }

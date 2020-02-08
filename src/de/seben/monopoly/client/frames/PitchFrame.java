@@ -1,18 +1,17 @@
-package de.seben.monopoly.client;
+package de.seben.monopoly.client.frames;
 
 import de.seben.monopoly.plot.Plot;
-import de.seben.monopoly.server.User;
+import de.seben.monopoly.utils.User;
 
 import javax.swing.*;
-import java.text.DateFormat;
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class SpielfeldFrame extends JFrame implements FrameDelegate {
+public class PitchFrame extends JFrame implements FrameDelegate {
 
-    private static SpielfeldFrame instance = null;
+    private static PitchFrame instance = null;
 
     private JLabel[] plotLabel;
-    private JTextArea chatTextArea;
     private JTextField serverTextField, portTextField, messageTextField;
     private JButton connectButton;
 
@@ -29,15 +28,15 @@ public class SpielfeldFrame extends JFrame implements FrameDelegate {
     private JLabel[][] placesForMeeples;    //Stellen für die Spielfiguren
 
 
-    private SpielfeldFrame(User[] users) { //Konstruktor
+    private PitchFrame(User[] users) { //Konstruktor
         this.users = users;
     }
 
     public static void createInstance(User[] users) { //Singleton-Pattern -> Fenster erstellen
-        instance = new SpielfeldFrame(users);
+        instance = new PitchFrame(users);
     }
 
-    public static SpielfeldFrame getInstance() { //Singleton-Pattern -> Fenster zurückgeben
+    public static PitchFrame getInstance() { //Singleton-Pattern -> Fenster zurückgeben
         return instance;
     }
 
@@ -91,13 +90,11 @@ public class SpielfeldFrame extends JFrame implements FrameDelegate {
         placesForMeeples[plotID][pos].setIcon(meeple);
     }
 
-    public void addChatMessage(String message){
-        if (chatTextArea.getLineCount() == 0) {
-            chatTextArea.append(message + " (" + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(new GregorianCalendar().getTime()) + ")");
-        } else {
-            chatTextArea.append("\n" + message + " (" + DateFormat.getTimeInstance(DateFormat.MEDIUM).format(new GregorianCalendar().getTime()) + ")");
-        }
-    }
-
+    @Override
     public void getInformation(String message){ }
+
+    @Override
+    public void update() {
+
+    }
 }
