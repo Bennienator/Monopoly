@@ -8,6 +8,7 @@ import de.seben.monopoly.events.EventManager;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.server.listeners.CommandReceiveListener;
 import de.seben.monopoly.server.listeners.ConsoleCommandListener;
+import de.seben.monopoly.server.listeners.UserLoginListener;
 import de.seben.monopoly.server.listeners.UserQuitListener;
 
 public class Server {
@@ -50,6 +51,7 @@ public class Server {
                 ServerConsoleCommandHandler.getInstance().start();
                 this.events = new EventManager();
                 events.registerListener(new UserQuitListener());
+                events.registerListener(new UserLoginListener());
                 events.registerListener(new CommandReceiveListener());
                 events.registerListener(new ConsoleCommandListener());
                 this.engine = ServerEngine.getInstance();

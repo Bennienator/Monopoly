@@ -1,8 +1,6 @@
 package de.seben.monopoly.server.listeners;
 
-import de.seben.monopoly.events.EventListener;
-import de.seben.monopoly.events.ServerCommandRecieveEvent;
-import de.seben.monopoly.events.UserQuitEvent;
+import de.seben.monopoly.events.*;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.server.Server;
 import de.seben.monopoly.utils.User;
@@ -11,12 +9,10 @@ import de.seben.monopoly.utils.CommandType;
 
 import java.util.ArrayList;
 
-import de.seben.monopoly.events.Event;
-
 public class CommandReceiveListener implements EventListener{
 
     @Event
-    public void onCommandReceive(ServerCommandRecieveEvent event){
+    public void onCommandReceive(ServerCommandReceiveEvent event){
         User sender = event.getCommandSender();
         Command command = event.getCommand();
         CommandType cmdType = command.getCmdType();
@@ -27,6 +23,7 @@ public class CommandReceiveListener implements EventListener{
         String message;
         int plotID;
         int amount;
+        int receiverID;
         
         switch (cmdType){
             case END_OF_ROUND: // args: null
@@ -47,7 +44,7 @@ public class CommandReceiveListener implements EventListener{
                 try {
                     amount = Integer.parseInt(args.get(0));
                     try{
-                        int receiverID = Integer.parseInt(args.get(1));
+                        receiverID = Integer.parseInt(args.get(1));
                         User receiver = Server.getInstance().getEngine().getUserByID(receiverID);
                         if(receiver != null) {
                             Server.getInstance().getEngine().changeBalance(sender, -1 * amount);
@@ -72,10 +69,14 @@ public class CommandReceiveListener implements EventListener{
                 message = String.join(" ", args);
                 Server.getInstance().getEngine().userChat(sender, message);
                 break;
-            case PRIVATE_CHAT: // args: userID, message
+            case PRIVATE_CHAT: // args: receiverID, message
                 try {
-                    int userID = Integer.parseInt(args.get(0));
-                    message = String.join(" ", args.subList(1, args.size()-1));
+                    receiverID = Integer.parseInt(args.get(0));
+                    User receiver = Server.getInstance().getEngine().getUserByID(receiverID);
+                    if(receiver != null) {
+                        message = String.join(" ", args.subList(1, args.size() - 1));
+                        Server.getInstance().getEngine().userPrivateChat(sender, receiver, message);
+                    }
                 }catch (NumberFormatException e){
                     Monopoly.debug("userID not a number");
                 }
@@ -89,7 +90,7 @@ public class CommandReceiveListener implements EventListener{
                     sender.setName(username);
                     Monopoly.debug("Set name from Client " + sender.getID() + " to '" + username + "'");
                     Server.getInstance().getController().sendCommand(new Command(CommandType.ACCEPT), sender);
-                    Server.getInstance().getController().broadcastUserList();
+                    Server.getInstance().getEvents().executeEvent(new UserLoginEvent(sender));
                 }
                 break;
             case DISCONNECT:

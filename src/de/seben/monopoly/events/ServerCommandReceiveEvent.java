@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import de.seben.monopoly.utils.User;
 import de.seben.monopoly.utils.Command;
 
-public class ServerCommandRecieveEvent implements IEvent{
+public class ServerCommandReceiveEvent implements IEvent{
 
     private User commandSender;
     private Command command;
     private ArrayList<String> args;
 
-    public ServerCommandRecieveEvent(User commandServer, Command command){
+    public ServerCommandReceiveEvent(User commandServer, Command command){
         this.commandSender = commandServer;
         this.command = command;
         this.args = command.getArgs();

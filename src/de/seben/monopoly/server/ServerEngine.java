@@ -155,4 +155,8 @@ public class ServerEngine {
     public void userChat(User sender, String message) {
         Server.getInstance().getController().broadcastCommand(new Command(CommandType.CHAT, sender.getName(), message));
     }
+
+	public void userPrivateChat(User sender, User receiver, String message) {
+        Server.getInstance().getController().sendCommand(new Command(CommandType.PRIVATE_CHAT, String.valueOf(sender.getID()), message), receiver);
+	}
 }

@@ -1,6 +1,6 @@
 package de.seben.monopoly.server;
 
-import de.seben.monopoly.events.ServerCommandRecieveEvent;
+import de.seben.monopoly.events.ServerCommandReceiveEvent;
 import de.seben.monopoly.events.UserQuitEvent;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
@@ -13,7 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class ClientConnection extends Thread{
+public class ClientConnection extends Thread {
 
     private ServerSocket server;
     private Socket socket;
@@ -45,7 +45,7 @@ public class ClientConnection extends Thread{
                     ois = new ObjectInputStream(socket.getInputStream());
                     Command in;
                     if((in = (Command) ois.readObject()) != null){
-                        Server.getInstance().getEvents().executeEvent(new ServerCommandRecieveEvent(this.user, in));
+                        Server.getInstance().getEvents().executeEvent(new ServerCommandReceiveEvent(this.user, in));
                     }
             }
         }catch (SocketException e){

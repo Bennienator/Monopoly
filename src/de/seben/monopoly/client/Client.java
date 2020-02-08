@@ -80,6 +80,9 @@ public class Client {
     public void addChatMessage(String sender, String message){
         chatFrame.addChatMessage(sender, message);
     }
+    public void addPrivateChatMessage(String sender, String message) {
+        chatFrame.addPrivateChatMessage(sender, message);
+    }
 
     public void movePlayer(String name, int plotID){
 

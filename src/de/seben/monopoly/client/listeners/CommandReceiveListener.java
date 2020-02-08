@@ -1,8 +1,6 @@
 package de.seben.monopoly.client.listeners;
 
 import de.seben.monopoly.client.Client;
-import de.seben.monopoly.client.frames.ChatFrame;
-import de.seben.monopoly.client.frames.ConnectFrame;
 import de.seben.monopoly.events.ClientCommandReceiveEvent;
 import de.seben.monopoly.events.Event;
 import de.seben.monopoly.events.EventListener;
@@ -15,7 +13,6 @@ import javax.swing.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CommandReceiveListener implements EventListener{
 
@@ -91,6 +88,10 @@ public class CommandReceiveListener implements EventListener{
             case CHAT:  // args: senderName, message
                 System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] " + args.get(0) + " » " + args.get(1));
                 Client.getInstance().addChatMessage(args.get(0), args.get(1));
+                break;
+            case PRIVATE_CHAT:  // args: senderID, message
+                System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH.mm.ss")) + "] " + args.get(0) + " *»* " + args.get(1));
+                Client.getInstance().addPrivateChatMessage(args.get(0), args.get(1));
                 break;
             case KICK:
                 Client.getInstance().disconnect();
