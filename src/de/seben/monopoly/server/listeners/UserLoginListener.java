@@ -13,6 +13,9 @@ public class UserLoginListener implements EventListener {
 		User user = event.getUser();
 		System.out.println(user.getName() + " (" + user.getID() + ") joined");
 		Server.getInstance().getController().broadcastUserList();
+		if(Server.getInstance().getEngine().getUsers().size() == 4){
+			//TODO: START GAME
+		}
 	}
 
 }

@@ -46,6 +46,7 @@ public class CommandReceiveListener implements EventListener{
                     }
                     Client.getInstance().getPlayers().setUsers(users);
                     Client.getInstance().getConnectFrame().update();
+                    Client.getInstance().getChatFrame().update();
                 }catch (NumberFormatException e){
                     Monopoly.debug("Error receiving playerList");
                 }
@@ -89,7 +90,7 @@ public class CommandReceiveListener implements EventListener{
                 System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] " + args.get(0) + " » " + args.get(1));
                 Client.getInstance().addChatMessage(args.get(0), args.get(1));
                 break;
-            case PRIVATE_CHAT:  // args: senderID, message
+            case PRIVATE_CHAT:  // args: senderName, message
                 System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH.mm.ss")) + "] " + args.get(0) + " *»* " + args.get(1));
                 Client.getInstance().addPrivateChatMessage(args.get(0), args.get(1));
                 break;

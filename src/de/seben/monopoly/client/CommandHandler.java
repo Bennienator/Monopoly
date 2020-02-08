@@ -28,6 +28,10 @@ public class CommandHandler extends Thread{
         
         try{
             username = JOptionPane.showInputDialog(null, "Bitte gebe deinen Benutzernamen ein.", "Monopoly - Login", JOptionPane.QUESTION_MESSAGE);
+            if(username == null || username.isEmpty()){
+                Monopoly.debug("Stopping...");
+                System.exit(12);
+            }
         }catch(Exception e){
             username = "guest" + (int) (Math.random()*100);
         }

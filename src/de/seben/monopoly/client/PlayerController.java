@@ -25,6 +25,23 @@ public class PlayerController {
 		this.users = users;
 	}
 
+	public User getUserByUsername(String username){
+		for(User user : users){
+			if(user.getName().equalsIgnoreCase(username))
+				return user;
+		}
+		Monopoly.debug("No user found with username '" + username + "'");
+		return null;
+	}
+	public User getUserByID(int id) {
+		for(User user : users){
+			if(user.getID() == id)
+				return user;
+		}
+		Monopoly.debug("No user found with id '" + id + "'");
+		return null;
+	}
+
 	public ArrayList<User> getUsers() {
 		return this.users;
 	}

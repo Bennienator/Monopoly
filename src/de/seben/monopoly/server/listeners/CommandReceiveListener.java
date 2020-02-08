@@ -74,7 +74,7 @@ public class CommandReceiveListener implements EventListener{
                     receiverID = Integer.parseInt(args.get(0));
                     User receiver = Server.getInstance().getEngine().getUserByID(receiverID);
                     if(receiver != null) {
-                        message = String.join(" ", args.subList(1, args.size() - 1));
+                        message = String.join(" ", args.subList(1, args.size()));
                         Server.getInstance().getEngine().userPrivateChat(sender, receiver, message);
                     }
                 }catch (NumberFormatException e){
