@@ -28,6 +28,9 @@ public class CommandReceiveListener implements EventListener{
                     Monopoly.debug("Logged in as '" + event.getLastCommand().getArgs().get(0) + "'");
                     Client.getInstance().setUsername(event.getLastCommand().getArgs().get(0));
                     Client.getInstance().loggedIn();
+                }else if(event.getLastCommand().getCmdType().equals(CommandType.DISCONNECT)){
+                    Monopoly.debug("Disconnect accepted");
+                    Client.getInstance().disconnect();
                 }
                 break;
             case REFUSE:
@@ -36,6 +39,8 @@ public class CommandReceiveListener implements EventListener{
                     String username = JOptionPane.showInputDialog(null, "Der gewünschte Benutzername ist bereits vergeben!\nBitte gebe einen anderen Benutzernamen ein.", "Monopoly - Login", JOptionPane.QUESTION_MESSAGE);
                     Monopoly.debug("Logging in as '" + username + "'");
                     Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.LOGIN, username));
+                }else if(event.getLastCommand().getCmdType().equals(CommandType.DISCONNECT)){
+                    Monopoly.debug("Disconnect refused");
                 }
                 break;
             case PLAYERLIST:
@@ -97,9 +102,6 @@ public class CommandReceiveListener implements EventListener{
             case KICK:
                 Client.getInstance().disconnect();
                 System.out.println("You were kicked by Server");
-                break;
-            case DISCONNECT:
-                Client.getInstance().disconnect();
                 break;
             default:
                 Monopoly.debug("Unknown command");
