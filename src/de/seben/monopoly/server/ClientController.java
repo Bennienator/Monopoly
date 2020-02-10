@@ -52,7 +52,6 @@ public class ClientController {
 
     public void disconnect(ClientConnection connection){
         if(connection != null) {
-            connection.sendCommand(new Command(CommandType.ACCEPT));
             connection.close();
             Server.getInstance().getEngine().removeUser(connection.getID());
             clients.remove(connection.getID());

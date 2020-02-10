@@ -7,6 +7,7 @@ import de.seben.monopoly.utils.CommandType;
 import de.seben.monopoly.utils.User;
 
 import javax.swing.*;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -18,8 +19,8 @@ public class ChatFrame extends Thread implements FrameDelegate{
 
 	private JFrame frame = new JFrame("Monopoly - Chat");
 	private JPanel chatPanel = new JPanel();
-	private JTextArea chatTextArea = new JTextArea();
-	private JScrollPane scrollPane = new JScrollPane(chatTextArea);
+	private JTextPane chatTextPane = new JTextPane();
+	private JScrollPane scrollPane = new JScrollPane(chatTextPane);
 	private JPanel buttonPane = new JPanel();
 	private JTextField messageField = new JTextField();
 	private JComboBox<String> userSelector = new JComboBox<>();
@@ -30,15 +31,17 @@ public class ChatFrame extends Thread implements FrameDelegate{
 	public ChatFrame(){
 		this.users = Client.getInstance().getPlayers().getUsers();
 
-		frame.setSize(700, 900);
+		frame.setSize(600, 700);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
 
-		chatTextArea.setEditable(false);
+		chatTextPane.setEditable(false);
+		chatTextPane.setFont(new Font("Comic Sans MS", Font.PLAIN, 15));
+		((DefaultCaret)chatTextPane.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.PAGE_AXIS));
-		chatPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		chatPanel.add(scrollPane);
+		chatPanel.add(Box.createRigidArea(new Dimension(0,5)));
 
 		frame.add(chatPanel, BorderLayout.CENTER);
 
@@ -69,7 +72,7 @@ public class ChatFrame extends Thread implements FrameDelegate{
 		sendButton.addActionListener((ae) -> new Thread(() -> {
 			String username = (String) userSelector.getSelectedItem();
 			String message = messageField.getText();
-			if(username != null){
+			if(username != null && !message.isEmpty()){
 				if(username.equals("Öffentlich")){
 					Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.CHAT, message));
 				}else{
@@ -80,6 +83,7 @@ public class ChatFrame extends Thread implements FrameDelegate{
 		}).start());
 
 		frame.add(buttonPane, BorderLayout.PAGE_END);
+		frame.getRootPane().setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		update();
 
 		frame.setVisible(true);
@@ -91,10 +95,57 @@ public class ChatFrame extends Thread implements FrameDelegate{
 	}
 
 	public void addChatMessage(String sender, String message){
-		chatTextArea.append("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] " + sender + " » " + message + "\n");
+
+		try {
+			Document doc = chatTextPane.getStyledDocument();
+
+			SimpleAttributeSet dateSet = new SimpleAttributeSet();
+			StyleConstants.setForeground(dateSet, Color.DARK_GRAY);
+			doc.insertString(doc.getLength(), "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ", dateSet);
+
+			SimpleAttributeSet nameSet = new SimpleAttributeSet();
+			StyleConstants.setBold(nameSet, true);
+			StyleConstants.setForeground(nameSet, Color.BLACK);
+			doc.insertString(doc.getLength(), sender, nameSet);
+
+			doc.insertString(doc.getLength(), " » ", dateSet);
+
+			SimpleAttributeSet messageSet = new SimpleAttributeSet();
+			StyleConstants.setItalic(messageSet, true);
+			StyleConstants.setForeground(messageSet, Color.BLACK);
+			doc.insertString(doc.getLength(), message + "\n", messageSet);
+
+		}catch (BadLocationException e){
+			e.printStackTrace();
+		}
+
 	}
 	public void addPrivateChatMessage(String sender, String message) {
-		chatTextArea.append("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] " + sender + " *»* " + message + "\n");
+		try {
+			Document doc = chatTextPane.getStyledDocument();
+
+			SimpleAttributeSet dateSet = new SimpleAttributeSet();
+			StyleConstants.setBackground(dateSet, Color.LIGHT_GRAY);
+			StyleConstants.setForeground(dateSet, Color.DARK_GRAY);
+			doc.insertString(doc.getLength(), "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ", dateSet);
+
+			SimpleAttributeSet nameSet = new SimpleAttributeSet();
+			StyleConstants.setBold(nameSet, true);
+			StyleConstants.setBackground(nameSet, Color.LIGHT_GRAY);
+			StyleConstants.setForeground(nameSet, Color.BLACK);
+			doc.insertString(doc.getLength(), sender, nameSet);
+
+			doc.insertString(doc.getLength(), " » ", dateSet);
+
+			SimpleAttributeSet messageSet = new SimpleAttributeSet();
+			StyleConstants.setItalic(messageSet, true);
+			StyleConstants.setBackground(messageSet, Color.LIGHT_GRAY);
+			StyleConstants.setForeground(messageSet, Color.BLACK);
+			doc.insertString(doc.getLength(), message + "\n", messageSet);
+
+		}catch (BadLocationException e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override

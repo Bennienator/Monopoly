@@ -68,7 +68,7 @@ public class Client {
                 Monopoly.debug("Unknown Host");
                 System.exit(400);
             } else if (e instanceof ConnectException) {
-                Monopoly.debug("Port closed");
+                Monopoly.debug("Port " + port + " on host computer is closed");
                 System.exit(401);
             } else {
                 e.printStackTrace();

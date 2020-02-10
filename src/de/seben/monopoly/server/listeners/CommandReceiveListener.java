@@ -94,6 +94,7 @@ public class CommandReceiveListener implements EventListener{
                 }
                 break;
             case DISCONNECT:
+                Server.getInstance().getController().getClientConnection(sender).sendCommand(new Command(CommandType.ACCEPT));
                 Server.getInstance().getEvents().executeEvent(new UserQuitEvent(Server.getInstance().getController().getClientConnection(sender), "Requested"));
                 break;
             default:
