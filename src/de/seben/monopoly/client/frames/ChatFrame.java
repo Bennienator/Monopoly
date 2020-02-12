@@ -77,6 +77,30 @@ public class ChatFrame extends Thread implements FrameDelegate{
 					Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.CHAT, message));
 				}else{
 					Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.PRIVATE_CHAT, String.valueOf(Client.getInstance().getPlayers().getUserByUsername(username).getID()), message));
+					try {
+						Document doc = chatTextPane.getStyledDocument();
+
+						SimpleAttributeSet dateSet = new SimpleAttributeSet();
+						StyleConstants.setBackground(dateSet, Color.LIGHT_GRAY);
+						StyleConstants.setForeground(dateSet, Color.DARK_GRAY);
+						doc.insertString(doc.getLength(), "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] ", dateSet);
+
+						SimpleAttributeSet nameSet = new SimpleAttributeSet();
+						StyleConstants.setBold(nameSet, true);
+						StyleConstants.setBackground(nameSet, Color.LIGHT_GRAY);
+						StyleConstants.setForeground(nameSet, Color.BLACK);
+						doc.insertString(doc.getLength(), Client.getInstance().getUsername() + " ↔ " + username, nameSet);
+
+						doc.insertString(doc.getLength(), " » ", dateSet);
+
+						SimpleAttributeSet messageSet = new SimpleAttributeSet();
+						StyleConstants.setItalic(messageSet, true);
+						StyleConstants.setBackground(messageSet, Color.LIGHT_GRAY);
+						StyleConstants.setForeground(messageSet, Color.BLACK);
+						doc.insertString(doc.getLength(), message + "\n", messageSet);
+					}catch (BadLocationException e){
+						e.printStackTrace();
+					}
 				}
 				messageField.setText("");
 			}
@@ -133,7 +157,7 @@ public class ChatFrame extends Thread implements FrameDelegate{
 			StyleConstants.setBold(nameSet, true);
 			StyleConstants.setBackground(nameSet, Color.LIGHT_GRAY);
 			StyleConstants.setForeground(nameSet, Color.BLACK);
-			doc.insertString(doc.getLength(), sender, nameSet);
+			doc.insertString(doc.getLength(), sender + " ↔ " + Client.getInstance().getUsername(), nameSet);
 
 			doc.insertString(doc.getLength(), " » ", dateSet);
 

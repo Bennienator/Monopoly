@@ -23,6 +23,7 @@ public enum CommandType implements Serializable {
     PRIVATE_CHAT("PCHAT"),
 
     //SYSTEM
+    SYNCHRONIZE("SYNC"),
     BROADCAST("BRDCAST"),
     PLAYERLIST("PLIST"),
     ACCEPT("ACPT"),

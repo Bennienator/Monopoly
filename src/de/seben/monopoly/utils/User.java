@@ -12,6 +12,7 @@ public class User {
     private int balance;    //Guthaben des Spielers
     private int actPos;     //aktuelle Position des Spielers auf dem Spielbrett (= ID des Grundstücks)
     private Image meeple;   //Spielfigur des Spielers
+    private boolean ready;
 
     public User(){
         this.meeple = Toolkit.getDefaultToolkit().getImage("");
@@ -23,6 +24,11 @@ public class User {
     public User(int id, String name){
         this(id);
         this.name = name;
+    }
+    public User(int id, String name, boolean ready){
+        this(id);
+        this.name = name;
+        this.ready = ready;
     }
 
     public int move(int moves){
@@ -55,5 +61,21 @@ public class User {
 
     public int getID() {
         return this.id;
+    }
+
+    public int getActPos() {
+        return actPos;
+    }
+
+    public void setActPos(int actPos) {
+        this.actPos = actPos;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void toggleReady() {
+        this.ready = !this.ready;
     }
 }

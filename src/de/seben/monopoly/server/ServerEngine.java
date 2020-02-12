@@ -159,4 +159,12 @@ public class ServerEngine {
 	public void userPrivateChat(User sender, User receiver, String message) {
         Server.getInstance().getController().sendCommand(new Command(CommandType.PRIVATE_CHAT, sender.getName(), message), receiver);
 	}
+
+    public boolean allUsersReady() {
+        boolean allReady = true;
+        for(User user : users.values()){
+            allReady &= user.isReady();
+        }
+        return allReady;
+    }
 }

@@ -5,6 +5,7 @@ import de.seben.monopoly.events.ClientCommandReceiveEvent;
 import de.seben.monopoly.events.Event;
 import de.seben.monopoly.events.EventListener;
 import de.seben.monopoly.main.Monopoly;
+import de.seben.monopoly.server.Server;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 import de.seben.monopoly.utils.User;
@@ -46,8 +47,8 @@ public class CommandReceiveListener implements EventListener{
             case PLAYERLIST:
                 try {
                     ArrayList<User> users = new ArrayList<>();
-                    for (int i = 0; i <= args.size() - 2; i += 2) {
-                        users.add(new User(Integer.parseInt(args.get(i)), args.get(i + 1)));
+                    for (int i = 0; i <= args.size() - 3; i += 3) {
+                        users.add(new User(Integer.parseInt(args.get(i)), args.get(i + 1), Boolean.parseBoolean(args.get(i + 2))));
                     }
                     Client.getInstance().getPlayers().setUsers(users);
                     Client.getInstance().getConnectFrame().update();
@@ -102,6 +103,11 @@ public class CommandReceiveListener implements EventListener{
             case KICK:
                 Client.getInstance().disconnect();
                 System.out.println("You were kicked by Server");
+                break;
+            case READY: // args: boolean
+                boolean ready = Boolean.parseBoolean(args.get(0));
+                Monopoly.debug(Client.getInstance().getUsername() + " is " + (ready ? "now" : "not") + " ready");
+                Client.getInstance().getConnectFrame().setReady(ready);
                 break;
             default:
                 Monopoly.debug("Unknown command");

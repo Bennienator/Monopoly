@@ -95,12 +95,14 @@ public class ClientController {
 
     public void broadcastUserList() {
         ArrayList<User> users = Server.getInstance().getEngine().getUsers();
-        String[] userStr = new String[users.size()*2];
+        String[] userStr = new String[users.size()*3];
         int i = 0;
         for(User user : users){
             userStr[i] = String.valueOf(user.getID());
             i++;
             userStr[i] = user.getName();
+            i++;
+            userStr[i] = String.valueOf(user.isReady());
             i++;
         }
         broadcastCommand(new Command(CommandType.PLAYERLIST, userStr));

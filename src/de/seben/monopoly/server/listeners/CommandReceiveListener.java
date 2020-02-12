@@ -97,6 +97,15 @@ public class CommandReceiveListener implements EventListener{
                 Server.getInstance().getController().getClientConnection(sender).sendCommand(new Command(CommandType.ACCEPT));
                 Server.getInstance().getEvents().executeEvent(new UserQuitEvent(Server.getInstance().getController().getClientConnection(sender), "Requested"));
                 break;
+            case READY: // args: boolean
+                sender.toggleReady();
+                Monopoly.debug(sender.getName() + " is " + (sender.isReady() ? "now" : "not") + " ready");
+                Server.getInstance().getController().sendCommand(new Command(CommandType.READY, String.valueOf(sender.isReady())), sender);
+                Server.getInstance().getController().broadcastUserList();
+                if(Server.getInstance().getEngine().allUsersReady()){
+                    Server.getInstance().getController().broadcastCommand(new Command(CommandType.START_ROUND));
+                }
+                break;
             default:
                 Monopoly.debug("Unknown Command");
         }

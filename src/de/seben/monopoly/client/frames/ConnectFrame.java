@@ -1,6 +1,8 @@
 package de.seben.monopoly.client.frames;
 
 import de.seben.monopoly.client.Client;
+import de.seben.monopoly.utils.Command;
+import de.seben.monopoly.utils.CommandType;
 import de.seben.monopoly.utils.User;
 
 import javax.swing.*;
@@ -21,7 +23,7 @@ public class ConnectFrame implements FrameDelegate {
 
     private JPanel statusPanel = new JPanel();
     private JLabel status = new JLabel("Warte auf Spieler...");
-
+    private JButton readyButton = new JButton("Bereit");
 
     public ConnectFrame(){
 
@@ -57,7 +59,9 @@ public class ConnectFrame implements FrameDelegate {
             usersPanel.add(labels[i]);
             usersPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         }
-        usersPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        usersPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        usersPanel.add(readyButton);
+        readyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         frame.getContentPane().add(usersPanel, BorderLayout.CENTER);
 
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.PAGE_AXIS));
@@ -70,9 +74,29 @@ public class ConnectFrame implements FrameDelegate {
 
         update();
 
+        readyButton.addActionListener((ae) -> {
+            Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.READY));
+            readyButton.setEnabled(false);
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    try {
+                        sleep(500);
+                        readyButton.setEnabled(true);
+                    }catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+        });
 
         frame.setVisible(true);
 
+    }
+
+    public void updateStatus(String newStatus){
+        status.setText(newStatus);
     }
 
     @Override
@@ -88,16 +112,26 @@ public class ConnectFrame implements FrameDelegate {
         for(int i = 0; i < 4; i++){
             labels[i].setForeground(new JLabel().getForeground());
             labels[i].setText("Spieler " + (i+1) + ": ");
+            labels[i].setAlignmentX(Component.CENTER_ALIGNMENT);
         }
         for(int i = 0; i < users.size(); i++){
             if(users.get(i).getName().equalsIgnoreCase(Client.getInstance().getUsername()))
                 labels[i].setForeground(Color.decode("#006400"));
-            labels[i].setText("Spieler " + (i+1) + ": " + users.get(i).getName());
-
+            labels[i].setText("Spieler " + (i+1) + ": " + users.get(i).getName() + (users.get(i).isReady() ? "  ✔" : ""));
         }
 
+        updateStatus("Warte auf " + (4 - users.size()) + " weitere Spieler...");
 
-        status.setText("Warte auf " + (4 - users.size()) + " weitere Spieler...");
+    }
 
+    public void setVisible(boolean b) {
+        frame.setVisible(false);
+    }
+    public void setReady(boolean ready){
+        if(ready){
+            readyButton.setText("Warten");
+        }else{
+            readyButton.setText("Bereit");
+        }
     }
 }

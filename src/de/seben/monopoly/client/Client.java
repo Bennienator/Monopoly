@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Client {
 
@@ -105,7 +106,13 @@ public class Client {
     }
 
     public void startRound(){
-
+        getConnectFrame().updateStatus("Das Spiel startet...");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        getConnectFrame().setVisible(false);
     }
 
     public Socket getSocket(){ return socket; }
