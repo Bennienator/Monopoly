@@ -79,10 +79,14 @@ public class Client {
     }
 
     public void addChatMessage(String sender, String message){
-        chatFrame.addChatMessage(sender, message);
+        if(chatFrame != null) {
+            chatFrame.addChatMessage(sender, message);
+        }
     }
     public void addPrivateChatMessage(String sender, String message) {
-        chatFrame.addPrivateChatMessage(sender, message);
+        if(chatFrame != null) {
+            chatFrame.addPrivateChatMessage(sender, message);
+        }
     }
 
     public void movePlayer(String name, int plotID){

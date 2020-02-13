@@ -51,8 +51,10 @@ public class CommandReceiveListener implements EventListener{
                         users.add(new User(Integer.parseInt(args.get(i)), args.get(i + 1), Boolean.parseBoolean(args.get(i + 2))));
                     }
                     Client.getInstance().getPlayers().setUsers(users);
-                    Client.getInstance().getConnectFrame().update();
-                    Client.getInstance().getChatFrame().update();
+                    if(Client.getInstance().getConnectFrame() != null) {
+                        Client.getInstance().getConnectFrame().update();
+                        Client.getInstance().getChatFrame().update();
+                    }
                 }catch (NumberFormatException e){
                     Monopoly.debug("Error receiving playerList");
                 }

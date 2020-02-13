@@ -186,7 +186,7 @@ public class ChatFrame extends Thread implements FrameDelegate{
 		if(prevSelected.equals("Öffentlich"))
 			userSelector.setSelectedItem(prevSelected);
 		for(User user : users) {
-			if (!Client.getInstance().getUsername().equalsIgnoreCase(user.getName())) {
+			if (user.getName() != null && !Client.getInstance().getUsername().equalsIgnoreCase(user.getName())) {
 				userSelector.addItem(user.getName());
 				if(user.getName().equals(prevSelected))
 					userSelector.setSelectedItem(prevSelected);

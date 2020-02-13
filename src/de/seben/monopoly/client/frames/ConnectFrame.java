@@ -109,18 +109,37 @@ public class ConnectFrame implements FrameDelegate {
 
         this.users = Client.getInstance().getPlayers().getUsers();
 
-        for(int i = 0; i < 4; i++){
-            labels[i].setForeground(new JLabel().getForeground());
-            labels[i].setText("Spieler " + (i+1) + ": ");
-            labels[i].setAlignmentX(Component.CENTER_ALIGNMENT);
-        }
-        for(int i = 0; i < users.size(); i++){
-            if(users.get(i).getName().equalsIgnoreCase(Client.getInstance().getUsername()))
-                labels[i].setForeground(Color.decode("#006400"));
-            labels[i].setText("Spieler " + (i+1) + ": " + users.get(i).getName() + (users.get(i).isReady() ? "  ✔" : ""));
-        }
+        if(Client.getInstance().getUsername() != null && !Client.getInstance().getUsername().isEmpty()) {
 
-        updateStatus("Warte auf " + (4 - users.size()) + " weitere Spieler...");
+            for (int i = 0; i < 4; i++) {
+                labels[i].setForeground(new JLabel().getForeground());
+                labels[i].setText("Spieler " + (i + 1) + ": ");
+                labels[i].setAlignmentX(Component.CENTER_ALIGNMENT);
+            }
+            int ready = 0;
+            for (int i = 0; i < users.size(); i++) {
+                if(users.get(i).getName() == null){
+                    labels[i].setText("Spieler " + (i + 1) + ": Unbekannter Benutzer");
+                } else {
+                    if (users.get(i).getName().equalsIgnoreCase(Client.getInstance().getUsername()))
+                        labels[i].setForeground(Color.decode("#006400"));
+                    if(users.get(i).isReady()){
+                        labels[i].setText("Spieler " + (i + 1) + ": " + users.get(i).getName() + "  ✔");
+                        ready++;
+                    }else{
+                        labels[i].setText("Spieler " + (i + 1) + ": " + users.get(i).getName());
+                    }
+
+                }
+            }
+
+            if(users.size() != 4) {
+                updateStatus("Warte auf " + (4 - users.size()) + " weitere Spieler...");
+            }else{
+                updateStatus("Warte bis alle Spieler bereit sind... (" + ready + "/4)");
+            }
+
+        }
 
     }
 

@@ -165,6 +165,7 @@ public class ServerEngine {
         for(User user : users.values()){
             allReady &= user.isReady();
         }
+        allReady &= users.size() == 4;
         return allReady;
     }
 }
