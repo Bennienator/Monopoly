@@ -2,8 +2,8 @@ package de.seben.monopoly.client.listeners;
 
 import de.seben.monopoly.client.Client;
 import de.seben.monopoly.events.ConsoleCommandEvent;
-import de.seben.monopoly.events.Event;
-import de.seben.monopoly.events.EventListener;
+import de.seben.monopoly.events.structure.Event;
+import de.seben.monopoly.events.structure.EventListener;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 
@@ -17,6 +17,7 @@ public class ConsoleCommandListener implements EventListener {
         ArrayList<String> args = event.getArgs();
         if(command.equalsIgnoreCase("help")){
             System.out.println("------ HILFE ------");
+            System.out.println("quit");
         }else if(command.equalsIgnoreCase("send")){
             try{
                 if(args.size() == 0)

@@ -1,9 +1,8 @@
-package de.seben.monopoly.events;
+package de.seben.monopoly.events.structure;
 
 import java.util.*;
 import java.lang.reflect.Method;
 import java.lang.Class;
-import java.lang.annotation.Annotation;
 
 import de.seben.monopoly.main.Monopoly;
 

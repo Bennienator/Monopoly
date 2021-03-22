@@ -1,4 +1,4 @@
-package de.seben.monopoly.events;
+package de.seben.monopoly.events.structure;
 
 import de.seben.monopoly.main.Monopoly;
 

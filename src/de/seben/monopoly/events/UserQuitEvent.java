@@ -1,9 +1,10 @@
 package de.seben.monopoly.events;
 
+import de.seben.monopoly.events.structure.IEvent;
 import de.seben.monopoly.server.ClientConnection;
 import de.seben.monopoly.utils.User;
 
-public class UserQuitEvent implements IEvent{
+public class UserQuitEvent implements IEvent {
 
     private ClientConnection connection;
     private String reason;

@@ -1,6 +1,8 @@
 package de.seben.monopoly.server.listeners;
 
 import de.seben.monopoly.events.*;
+import de.seben.monopoly.events.structure.Event;
+import de.seben.monopoly.events.structure.EventListener;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.server.Server;
 import de.seben.monopoly.utils.User;
@@ -9,7 +11,7 @@ import de.seben.monopoly.utils.CommandType;
 
 import java.util.ArrayList;
 
-public class CommandReceiveListener implements EventListener{
+public class CommandReceiveListener implements EventListener {
 
     @Event
     public void onCommandReceive(ServerCommandReceiveEvent event){

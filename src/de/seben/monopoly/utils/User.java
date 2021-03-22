@@ -1,11 +1,12 @@
 package de.seben.monopoly.utils;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable {
 
-    //TODO: Wie kann das Programm ein Icon einfügen?
-    //Muss das ein Icon sein oder kann das auch ein Image sein?
+    // TODO: Wie kann das Programm ein Icon einfügen?
+    // Muss das ein Icon sein oder kann das auch ein Image sein?
 
     private int id;         //ID des Spielers (eindeutige Identifikation)
     private String name;    //Name des Spielers

@@ -1,8 +1,8 @@
 package de.seben.monopoly.server.listeners;
 
 import de.seben.monopoly.events.ConsoleCommandEvent;
-import de.seben.monopoly.events.Event;
-import de.seben.monopoly.events.EventListener;
+import de.seben.monopoly.events.structure.Event;
+import de.seben.monopoly.events.structure.EventListener;
 import de.seben.monopoly.server.Server;
 import de.seben.monopoly.server.ServerEngine;
 import de.seben.monopoly.utils.User;
@@ -36,7 +36,7 @@ public class ConsoleCommandListener implements EventListener {
                     System.out.println("User '" + (id == -1 ? username : id) + "' is not existing");
                 }
             } else {
-                System.out.println("Usage: /kick <Username/ID>");
+                System.out.println("Usage: kick <Username/ID>");
             }
         }else if(event.getCommand().equalsIgnoreCase("info")){
             if(event.getArgs().size() > 0){
@@ -63,9 +63,9 @@ public class ConsoleCommandListener implements EventListener {
             }
         }else if(event.getCommand().equalsIgnoreCase("help")) {
             System.out.println("------ HELP ------");
-            System.out.println("/kick <Username/ID>");
-            System.out.println("/info [Username/ID]");
-        }else if(event.getCommand().equalsIgnoreCase("quit")){
+            System.out.println("kick <Username/ID>");
+            System.out.println("info [Username/ID]");
+        }else if(event.getCommand().equalsIgnoreCase("quit") || event.getCommand().equalsIgnoreCase("stop")){
             System.out.println("------ SHUTDOWN ------");
             Server.getInstance().stop();
         }else{

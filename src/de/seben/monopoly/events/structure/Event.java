@@ -1,4 +1,4 @@
-package de.seben.monopoly.events;
+package de.seben.monopoly.events.structure;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

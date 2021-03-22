@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 
-import de.seben.monopoly.events.EventManager;
+import de.seben.monopoly.events.structure.EventManager;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.server.listeners.CommandReceiveListener;
 import de.seben.monopoly.server.listeners.ConsoleCommandListener;
@@ -34,16 +34,16 @@ public class Server {
     public void start(){
         if(!running){
             running = true;
-            Monopoly.debug("Starting...");
+            System.out.println("Starting...");
             try {
                 serverSocket = new ServerSocket(7777);
             }catch(Exception e){
                 if(e instanceof BindException){
-                    Monopoly.debug("Port already in use");
+                    System.out.println("Port already in use");
                 }else if(e instanceof IOException){
                     e.printStackTrace();
                 }
-                Monopoly.debug("Exiting");
+                System.out.println("Exiting");
                 System.exit(-1);
             }
             if(serverSocket.isBound()){
@@ -56,6 +56,7 @@ public class Server {
                 events.registerListener(new ConsoleCommandListener());
                 this.engine = ServerEngine.getInstance();
                 this.controller = ClientController.getInstance().start();
+                System.out.println("Ready and waiting for players...");
             }
         }
     }
@@ -77,6 +78,7 @@ public class Server {
     }
 
 	public void stop() {
-
+        System.out.println("Shutting down...");
+        System.exit(99);
 	}
 }

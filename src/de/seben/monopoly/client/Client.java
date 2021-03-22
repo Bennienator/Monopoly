@@ -5,7 +5,7 @@ import de.seben.monopoly.client.frames.ConnectFrame;
 import de.seben.monopoly.client.frames.PitchFrame;
 import de.seben.monopoly.client.listeners.CommandReceiveListener;
 import de.seben.monopoly.client.listeners.ConsoleCommandListener;
-import de.seben.monopoly.events.EventManager;
+import de.seben.monopoly.events.structure.EventManager;
 import de.seben.monopoly.main.Monopoly;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
@@ -15,7 +15,6 @@ import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Client {
 
@@ -117,6 +116,7 @@ public class Client {
             e.printStackTrace();
         }
         getConnectFrame().setVisible(false);
+
     }
 
     public Socket getSocket(){ return socket; }

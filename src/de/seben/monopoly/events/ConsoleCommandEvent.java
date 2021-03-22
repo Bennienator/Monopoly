@@ -1,8 +1,10 @@
 package de.seben.monopoly.events;
 
+import de.seben.monopoly.events.structure.IEvent;
+
 import java.util.ArrayList;
 
-public class ConsoleCommandEvent implements IEvent{
+public class ConsoleCommandEvent implements IEvent {
 
     private String command;
     private ArrayList<String> args = new ArrayList<>();

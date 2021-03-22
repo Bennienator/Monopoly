@@ -64,7 +64,7 @@ public class ClientConnection extends Thread {
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.writeObject(output);
                 this.lastSendCommand = output;
-                Monopoly.debug("(" + id + ") Sending: " + output.getCmdType().name() + " " + String.join(" ", output.getArgs()));
+                Monopoly.debug("(" + id + ") Sending: " + output.getCmdType().name() + (output.getArgs().size() > 0 ? " " + String.join(" ", output.getArgs()) : ""));
             } catch (SocketException e){
                 Server.getInstance().getEvents().executeEvent(new UserQuitEvent(this, e.getMessage()));
             } catch (IOException e) {
@@ -81,7 +81,9 @@ public class ClientConnection extends Thread {
     public User getUser(){
         return this.user;
     }
-    public static int getAmount(){return amount;}
+    public static int getAmount(){
+        return amount;
+    }
 
     public void close() {
         try{

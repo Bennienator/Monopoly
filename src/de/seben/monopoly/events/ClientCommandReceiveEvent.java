@@ -2,9 +2,10 @@ package de.seben.monopoly.events;
 
 import java.util.ArrayList;
 
+import de.seben.monopoly.events.structure.IEvent;
 import de.seben.monopoly.utils.Command;
 
-public class ClientCommandReceiveEvent implements IEvent{
+public class ClientCommandReceiveEvent implements IEvent {
 
     private Command command;
     private Command lastCommand;

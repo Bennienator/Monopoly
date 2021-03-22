@@ -2,10 +2,9 @@ package de.seben.monopoly.client.listeners;
 
 import de.seben.monopoly.client.Client;
 import de.seben.monopoly.events.ClientCommandReceiveEvent;
-import de.seben.monopoly.events.Event;
-import de.seben.monopoly.events.EventListener;
+import de.seben.monopoly.events.structure.Event;
+import de.seben.monopoly.events.structure.EventListener;
 import de.seben.monopoly.main.Monopoly;
-import de.seben.monopoly.server.Server;
 import de.seben.monopoly.utils.Command;
 import de.seben.monopoly.utils.CommandType;
 import de.seben.monopoly.utils.User;

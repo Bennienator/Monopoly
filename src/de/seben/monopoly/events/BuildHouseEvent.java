@@ -1,5 +1,6 @@
 package de.seben.monopoly.events;
 
+import de.seben.monopoly.events.structure.IEvent;
 import de.seben.monopoly.plot.Plot;
 import de.seben.monopoly.utils.User;
 
