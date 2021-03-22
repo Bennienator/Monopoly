@@ -14,32 +14,32 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class CommandReceiveListener implements EventListener{
+public class CommandReceiveListener implements EventListener {
 
     @Event
-    public void onCommandReceive(ClientCommandReceiveEvent event){
+    public void onCommandReceive(ClientCommandReceiveEvent event) {
         Command command = event.getCommand();
         CommandType cmdType = command.getCmdType();
         ArrayList<String> args = event.getArgs();
         Monopoly.debug("Server: " + cmdType.name() + (args.size() > 0 ? " " + String.join(" ", args) : ""));
         switch (cmdType) {
             case ACCEPT:
-                if(event.getLastCommand().getCmdType().equals(CommandType.LOGIN)){
+                if (event.getLastCommand().getCmdType().equals(CommandType.LOGIN)) {
                     Monopoly.debug("Logged in as '" + event.getLastCommand().getArgs().get(0) + "'");
                     Client.getInstance().setUsername(event.getLastCommand().getArgs().get(0));
                     Client.getInstance().loggedIn();
-                }else if(event.getLastCommand().getCmdType().equals(CommandType.DISCONNECT)){
+                } else if (event.getLastCommand().getCmdType().equals(CommandType.DISCONNECT)) {
                     Monopoly.debug("Disconnect accepted");
                     Client.getInstance().disconnect();
                 }
                 break;
             case REFUSE:
-                if(event.getLastCommand().getCmdType().equals(CommandType.LOGIN)){
+                if (event.getLastCommand().getCmdType().equals(CommandType.LOGIN)) {
                     Monopoly.debug("Username is already taken");
                     String username = JOptionPane.showInputDialog(null, "Der gewünschte Benutzername ist bereits vergeben!\nBitte gebe einen anderen Benutzernamen ein.", "Monopoly - Login", JOptionPane.QUESTION_MESSAGE);
                     Monopoly.debug("Logging in as '" + username + "'");
                     Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.LOGIN, username));
-                }else if(event.getLastCommand().getCmdType().equals(CommandType.DISCONNECT)){
+                } else if (event.getLastCommand().getCmdType().equals(CommandType.DISCONNECT)) {
                     Monopoly.debug("Disconnect refused");
                 }
                 break;
@@ -50,11 +50,11 @@ public class CommandReceiveListener implements EventListener{
                         users.add(new User(Integer.parseInt(args.get(i)), args.get(i + 1), Boolean.parseBoolean(args.get(i + 2))));
                     }
                     Client.getInstance().getPlayers().setUsers(users);
-                    if(Client.getInstance().getConnectFrame() != null) {
+                    if (Client.getInstance().getConnectFrame() != null) {
                         Client.getInstance().getConnectFrame().update();
                         Client.getInstance().getChatFrame().update();
                     }
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     Monopoly.debug("Error receiving playerList");
                 }
                 break;
@@ -75,9 +75,9 @@ public class CommandReceiveListener implements EventListener{
                 break;
             case BUY_PLOT:
                 int choice = JOptionPane.showConfirmDialog(null, "Du hast die Möglichkeit, das Grundstück '" + args.get(1) + "' zu kaufen. Es kostet " + args.get(2) + ".\nMöchtest du dieses Grundstück kaufen?", "Grundstück verfügbar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (choice == 0){
+                if (choice == 0) {
                     Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.PAY, args.get(2)));
-                }else{
+                } else {
                     Client.getInstance().getHandler().sendCommandToServer(new Command(CommandType.REFUSE));
                 }
                 break;
